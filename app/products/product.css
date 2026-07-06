@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+/* =========================
+   Layout
+========================= */
+
+.dashboard {
+  @apply min-h-screen bg-slate-100;
+}
+
+.main-content {
+  @apply ml-72 min-h-screen p-5 transition-all duration-300;
+}
+
+/* =========================
+   Sections
+========================= */
+
+.page-section {
+  @apply mt-4;
+}
+
+.page-grid {
+  @apply grid gap-4;
+}
+
+.page-card {
+  @apply rounded-2xl border border-slate-200 bg-white shadow-sm;
+}
+
+/* =========================
+   Header
+========================= */
+
+.page-header {
+  @apply flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between;
+}
+
+/* =========================
+   Stats
+========================= */
+
+.stats-grid {
+  @apply grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4;
+}
+
+/* =========================
+   Filters
+========================= */
+
+.filters-card {
+  @apply rounded-2xl border border-slate-200 bg-white p-4 shadow-sm;
+}
+
+.filters-grid {
+  @apply flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between;
+}
+
+/* =========================
+   Table
+========================= */
+
+.table-card {
+  @apply overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm;
+}
+
+/* =========================
+   Buttons
+========================= */
+
+.primary-btn {
+  @apply rounded-xl bg-blue-600 px-4 py-2 font-semibold text-white transition hover:bg-blue-700 text-sm;
+}
+
+.secondary-btn {
+  @apply rounded-xl border border-slate-200 bg-white px-4 py-2 font-semibold text-slate-700 transition hover:bg-slate-100 text-sm;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width:1280px){
+
+.main-content{
+  @apply ml-72 p-6;
+}
+
+}
+
+@media (max-width:1024px){
+
+.main-content{
+  @apply ml-0 p-5;
+}
+
+}
+
+@media (max-width:768px){
+
+.main-content{
+  @apply p-4;
+}
+
+.page-header{
+  @apply gap-4;
+}
+
+.filters-grid{
+  @apply gap-4;
+}
+
+}
+
+@media (max-width:640px){
+
+.main-content{
+  @apply p-3;
+}
+
+.stats-grid{
+  @apply grid-cols-1;
+}
+
+}
