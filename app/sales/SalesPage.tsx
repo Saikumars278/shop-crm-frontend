@@ -201,11 +201,12 @@ export default function SalesPage() {
                       <stop offset="95%" stopColor="#215CF6" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E3E6EA" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9AA3AF', fontSize: 12 }} dy={10} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9AA3AF', fontSize: 12 }} tickFormatter={(val) => `₹${val/1000}k`} dx={-10} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(148, 163, 184, 0.15)" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 12 }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 12 }} tickFormatter={(val) => `₹${val/1000}k`} dx={-10} />
                   <Tooltip 
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)' }}
+                    contentStyle={{ borderRadius: '12px', border: '1px solid rgba(226, 232, 240, 0.15)', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.3)', backgroundColor: '#0f172a', color: '#f8fafc' }}
+                    itemStyle={{ color: '#f8fafc' }}
                     formatter={(value) => [formatINR(Number(value) || 0), "Revenue"]}
                   />
                   <Area type="monotone" dataKey="revenue" stroke="#215CF6" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
@@ -219,10 +220,15 @@ export default function SalesPage() {
             <div className="h-44 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={paymentData} layout="vertical" margin={{ top: 0, right: 30, left: 10, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E3E6EA" />
+                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(148, 163, 184, 0.15)" />
                   <XAxis type="number" hide />
-                  <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#5B6472', fontWeight: 600 }} />
-                  <Tooltip cursor={{fill: '#F4F5F7'}} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }} formatter={(val) => formatINR(Number(val) || 0)} />
+                  <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
+                  <Tooltip 
+                    cursor={{ fill: 'rgba(148, 163, 184, 0.1)' }} 
+                    contentStyle={{ borderRadius: '12px', border: '1px solid rgba(226, 232, 240, 0.15)', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.3)', backgroundColor: '#0f172a', color: '#f8fafc' }} 
+                    itemStyle={{ color: '#f8fafc' }}
+                    formatter={(val) => formatINR(Number(val) || 0)} 
+                  />
                   <Bar dataKey="amount" radius={[0, 4, 4, 0]} barSize={24} />
                 </BarChart>
               </ResponsiveContainer>
@@ -246,9 +252,9 @@ export default function SalesPage() {
             </div>
             <div className="p-3 space-y-3">
               {topProducts.map((p, i) => (
-                <div key={p.id} className="flex items-center justify-between pb-3 border-b border-slate-50 last:border-0 last:pb-0">
+                <div key={p.id} className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 last:border-0 last:pb-0">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-50 text-[10px] font-bold text-blue-600">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-50 dark:bg-blue-950/60 text-[10px] font-bold text-blue-600 dark:text-blue-400">
                       #{i + 1}
                     </div>
                     <div>
@@ -290,10 +296,10 @@ export default function SalesPage() {
                     <th className="px-4 py-2 font-bold text-center">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50 text-[12px]">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-[12px]">
                   {paginatedSales.length > 0 ? paginatedSales.map((sale) => (
-                    <tr key={sale.id} className="transition-colors hover:bg-slate-50 dark:bg-slate-800/70">
-                      <td className="px-4 py-2.5 font-semibold text-blue-600">{sale.id}</td>
+                    <tr key={sale.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                      <td className="px-4 py-2.5 font-semibold text-blue-600 dark:text-blue-400">{sale.id}</td>
                       <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300 font-medium">{sale.date}</td>
                       <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300">{sale.items}</td>
                       <td className="px-4 py-2.5 font-bold text-slate-800 dark:text-white tabular-nums">{formatINR(sale.total)}</td>
@@ -306,8 +312,10 @@ export default function SalesPage() {
                         </span>
                       </td>
                       <td className="px-4 py-2.5">
-                        <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase ${
-                          sale.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase ${
+                          sale.status === 'Paid' || sale.status === 'Completed'
+                            ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400'
+                            : 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400'
                         }`}>
                           {sale.status}
                         </span>
@@ -316,7 +324,7 @@ export default function SalesPage() {
                         <div className="flex items-center justify-center gap-1.5">
                            <button 
                              onClick={() => setSelectedSale(sale)}
-                             className="flex h-7 w-7 items-center justify-center rounded bg-slate-100 text-slate-500 dark:text-slate-400 transition hover:bg-blue-100 hover:text-blue-600" 
+                             className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 transition hover:bg-blue-100 dark:hover:bg-blue-950/60 hover:text-blue-600 dark:hover:text-blue-400" 
                              title="View"
                            >
                              <FiEye size={12} />
@@ -408,7 +416,7 @@ export default function SalesPage() {
             <div className="mt-6 flex gap-3">
               <button 
                 onClick={() => setSelectedSale(null)}
-                className="flex-1 rounded-xl bg-slate-100 py-3 font-bold text-slate-700 dark:text-slate-200 transition hover:bg-slate-200"
+                className="flex-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-3 font-bold text-slate-700 dark:text-slate-200 transition hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95"
               >
                 Close
               </button>

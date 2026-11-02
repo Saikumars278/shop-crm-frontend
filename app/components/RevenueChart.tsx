@@ -93,7 +93,7 @@ export default function RevenueChart() {
       : data.chart;
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
+    <div className="flex flex-col h-full overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
 
       {/* ── Header ── */}
       <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-5 py-4">

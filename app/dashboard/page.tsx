@@ -6,61 +6,58 @@ import Sidebar from "@/app/components/Sidebar";
 import Header from "@/app/components/Header";
 import StatCards from "@/app/components/StatCards";
 import RevenueChart from "@/app/components/RevenueChart";
-import SalesChart from "@/app/components/SalesChart";
-import StockOverview from "@/app/components/StockOverview";
-import RecentSales from "@/app/components/RecentSales";
-import LowStock from "@/app/components/LowStock";
 import TodayPerformance from "@/app/components/TodayPerformance";
+import AiRecommendations from "@/app/components/AiRecommendations";
+import StockOverview from "@/app/components/StockOverview";
 import TopProducts from "@/app/components/TopProducts";
-import ExpiryAlerts from "@/app/components/ExpiryAlerts";
+import RecentSales from "@/app/components/RecentSales";
 
 export default function Dashboard() {
   return (
     <div className="dashboard">
       <Sidebar />
 
-      <main className="main-content">
+      <main className="main-content space-y-6">
+        {/* Header on Top */}
         <Header />
 
-        {/* Stat Cards */}
-        <section className="mt-4">
-          <StatCards />
-        </section>
-
-        {/* Today's Performance */}
-        <section className="mt-4">
-          <TodayPerformance />
-        </section>
-
-        {/* Revenue & Sales Charts */}
-        <section className="dashboard-grid mt-8">
-          <RevenueChart />
-          <SalesChart />
-        </section>
-
-        {/* Top Products */}
-        <section className="mt-4">
-          <TopProducts />
-        </section>
-
-        {/* Main Layout — StockOverview | RecentSales + LowStock */}
-        <section className="mt-8 dashboard-flex">
-
-          {/* Left Column — Stock Overview only */}
-          <div className="dashboard-column">
-            <StockOverview />
-            <ExpiryAlerts />
+        {/* ─── 12-COLUMN DASHBOARD GRID ─── */}
+        <div className="grid grid-cols-12 gap-6 items-stretch">
+          {/* Row 1: 4 KPI Cards */}
+          <div className="col-span-12">
+            <StatCards />
           </div>
 
-          {/* Right Column — Recent Grocery Bills + Low Stock Products */}
-          <div className="dashboard-column">
+          {/* Row 2: Revenue Analytics (8 columns) + Today's Target (4 columns) */}
+          <div className="col-span-12 lg:col-span-8 flex flex-col">
+            <RevenueChart />
+          </div>
+          <div className="col-span-12 lg:col-span-4 flex flex-col">
+            <TodayPerformance />
+          </div>
+
+          {/* Row 3: AI Recommendations + Stock Overview (Equal Height 2-Column Grid) */}
+          <div className="col-span-12 grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch w-full box-border">
+            <div className="w-full h-full min-h-[460px] flex flex-col box-border">
+              <AiRecommendations />
+            </div>
+            <div className="w-full h-full min-h-[460px] flex flex-col box-border">
+              <StockOverview />
+            </div>
+          </div>
+
+          {/* Row 4: Top Products (6 columns) + Recent Bills (6 columns) */}
+          <div className="col-span-12 lg:col-span-6 flex flex-col">
+            <TopProducts />
+          </div>
+          <div className="col-span-12 lg:col-span-6 flex flex-col">
             <RecentSales />
-            <LowStock />
           </div>
-
-        </section>
-
+        </div>
       </main>
     </div>
   );
-}
+}
+
+
+

@@ -10,7 +10,7 @@ import ProductTable from "./ProductTable";
 
 export default function ProductsPage() {
   return (
-    <div className="dashboard bg-slate-100">
+    <div className="dashboard bg-slate-100 dark:bg-slate-950 transition-colors">
       <Sidebar />
 
       <main className="main-content">

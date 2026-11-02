@@ -10,6 +10,8 @@ import {
   Wallet,
   CreditCard,
   Smartphone,
+  Clock,
+  Sparkles,
   Check,
   CheckCircle2,
   Package,
@@ -20,22 +22,26 @@ import {
   ArrowLeft,
   Loader2,
   AlertTriangle,
+  Camera,
 } from "lucide-react";
 import ReceiptView from "../billing/Billprintpreview ";
 import type { ReceiptData } from "../billing/Billprintpreview ";
+import BarcodeScannerModal from "@/app/components/BarcodeScannerModal";
+
+import { useTheme } from "next-themes";
 
 /* ------------------------------------------------------------------ */
 /*  API endpoints — see views.py / urls.py                             */
 /* ------------------------------------------------------------------ */
 
-const PRODUCTS_URL = "http://127.0.0.1:8000/api/billing/products/";
-const SALES_URL = "http://127.0.0.1:8000/api/billing/sales/";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+const PRODUCTS_URL = `${API_BASE}/billing/products/`;
+const SALES_URL = `${API_BASE}/billing/sales/`;
 
 const PAYMENT_METHODS = [
   { id: "cash", label: "Cash", icon: Wallet },
-  { id: "card", label: "Card", icon: CreditCard },
-  { id: "upi", label: "UPI", icon: Smartphone },
 ];
+
 
 const DISCOUNT_PRESETS = [0, 5, 10, 15];
 const TAX_RATE = 0.05;
@@ -51,6 +57,7 @@ interface BillingProduct {
   unit: string;
   sellPrice: number;
   stock: number;
+  barcode?: string;
 }
 
 interface CartItem {
@@ -66,7 +73,7 @@ interface CartItem {
 /*  Design tokens — shared with Receipt.jsx                            */
 /* ------------------------------------------------------------------ */
 
-export const T = {
+export const LIGHT_T = {
   bg: "#F4F5F7",
   surface: "#FFFFFF",
   surfaceAlt: "#FAFBFC",
@@ -86,20 +93,44 @@ export const T = {
   badSoft: "#FBEAE8",
 };
 
-export function GlobalStyle() {
+export const DARK_T = {
+  bg: "#090d16",
+  surface: "#0f172a",
+  surfaceAlt: "#1e293b",
+  border: "#334155",
+  borderStrong: "#475569",
+  ink: "#f8fafc",
+  inkSoft: "#cbd5e1",
+  inkFaint: "#94a3b8",
+  accent: "#3b82f6",
+  accentDark: "#60a5fa",
+  accentSoft: "#1e3a8a",
+  good: "#10b981",
+  goodSoft: "#064e3b",
+  warn: "#fbbf24",
+  warnSoft: "#451a03",
+  bad: "#f43f5e",
+  badSoft: "#881337",
+};
+
+export const T = LIGHT_T;
+
+export function GlobalStyle({ themeTokens }: { themeTokens?: typeof LIGHT_T } = {}) {
+  const t = themeTokens || LIGHT_T;
   return (
     <style>{`
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
       .pos-ui { font-family: 'Inter', sans-serif; }
       .pos-num { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+      .pos-ui input::placeholder { color: ${t.inkFaint}; opacity: 1; }
 
       .pos-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
       .pos-scroll::-webkit-scrollbar-track { background: transparent; }
-      .pos-scroll::-webkit-scrollbar-thumb { background: ${T.borderStrong}; border-radius: 8px; }
+      .pos-scroll::-webkit-scrollbar-thumb { background: ${t.borderStrong}; border-radius: 8px; }
 
       .pos-focus:focus-visible {
-        outline: 2.5px solid ${T.accent};
+        outline: 2.5px solid ${t.accent};
         outline-offset: 2px;
       }
 
@@ -107,7 +138,7 @@ export function GlobalStyle() {
         transition: transform .1s ease, border-color .1s ease, box-shadow .1s ease, background-color .1s ease;
       }
       .prod-btn:not(:disabled):hover {
-        border-color: ${T.accent};
+        border-color: ${t.accent};
         box-shadow: 0 4px 14px -6px rgba(33,92,246,0.35);
       }
       .prod-btn:not(:disabled):active { transform: scale(0.97); }
@@ -118,11 +149,11 @@ export function GlobalStyle() {
       .qty-btn:not(:disabled):active { transform: scale(0.9); }
 
       .cta-btn { transition: background-color .12s ease, transform .1s ease, box-shadow .12s ease; }
-      .cta-btn:not(:disabled):hover { background-color: ${T.accentDark}; }
+      .cta-btn:not(:disabled):hover { background-color: ${t.accentDark}; }
       .cta-btn:not(:disabled):active { transform: scale(0.985); }
 
       .clear-btn { transition: background-color .12s ease, border-color .12s ease, transform .1s ease; }
-      .clear-btn:hover { background-color: ${T.bad}; color: #fff !important; border-color: ${T.bad} !important; }
+      .clear-btn:hover { background-color: ${t.bad}; color: #fff !important; border-color: ${t.bad} !important; }
       .clear-btn:active { transform: scale(0.97); }
 
       @keyframes modal-fade { from { opacity: 0; } to { opacity: 1; } }
@@ -164,12 +195,20 @@ export function formatINR(n: number | string) {
 /* ------------------------------------------------------------------ */
 
 export default function BillingPage({
-  storeName = "Ganesh General Store",
+  storeName = "Sai General Store",
   storeTagline = "Grocery & Daily Essentials",
-  storeAddress = "12, Main Road, Chennai - 600001",
+  storeAddress = "12, Main Road, Nagercoil - 629001",
   storePhone = "+91 98765 43210",
   cashierName = "Admin",
 }) {
+  const { resolvedTheme, theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  const isDark = mounted && (resolvedTheme === "dark" || theme === "dark");
+  const T = isDark ? DARK_T : LIGHT_T;
+
   // Products now come from the real database via /api/products/ —
   // no more DEMO_PRODUCTS fallback.
   const [products, setProducts] = useState<BillingProduct[]>([]);
@@ -187,6 +226,8 @@ export default function BillingPage({
   const [confirming, setConfirming] = useState(false);
   const [saleError, setSaleError] = useState<string | null>(null);
   const [flashId, setFlashId] = useState<string | null>(null);
+  const [scannerOpen, setScannerOpen] = useState(false);
+  const [scanToast, setScanToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
 
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -220,7 +261,10 @@ export default function BillingPage({
     return products.filter((p) => {
       const matchesCategory = activeCategory === "All" || p.category === activeCategory;
       const matchesQuery =
-        !q || p.name.toLowerCase().includes(q) || p.id.toLowerCase() === q;
+        !q ||
+        p.name.toLowerCase().includes(q) ||
+        p.id.toLowerCase() === q ||
+        (p.barcode && p.barcode.toLowerCase().includes(q));
       return matchesCategory && matchesQuery;
     });
   }, [products, query, activeCategory]);
@@ -264,15 +308,39 @@ export default function BillingPage({
   };
 
   /* ---------------- Barcode / keyboard workflow ---------------- */
+  const handleBarcodeScanned = (barcodeStr: string) => {
+    const code = barcodeStr.trim().toLowerCase();
+    if (!code) return;
+
+    // Search by exact barcode first, then id match or filtered match
+    const barcodeMatch = products.find(
+      (p) => p.barcode && p.barcode.trim().toLowerCase() === code
+    );
+    const idMatch = products.find(
+      (p) => p.id.toLowerCase() === code || `prd${p.id}`.toLowerCase() === code
+    );
+    const target = barcodeMatch ?? idMatch ?? filtered[0];
+
+    if (target) {
+      if (target.stock <= 0) {
+        setScanToast({ type: "error", msg: `"${target.name}" is Out of Stock! Cannot add to bill.` });
+      } else {
+        addToCart(target);
+        setScanToast({ type: "success", msg: `Added "${target.name}" (₹${target.sellPrice}) to bill.` });
+      }
+    } else {
+      setScanToast({ type: "error", msg: `No product found matching barcode "${barcodeStr}".` });
+    }
+
+    setTimeout(() => setScanToast(null), 4500);
+  };
+
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      const exact = products.find((p) => p.id.toLowerCase() === query.trim().toLowerCase());
-      const target = exact ?? filtered[0];
-      if (target) {
-        addToCart(target);
-        setQuery("");
-      }
+      if (!query.trim()) return;
+      handleBarcodeScanned(query.trim());
+      setQuery("");
     } else if (e.key === "Escape") {
       setQuery("");
     }
@@ -336,7 +404,7 @@ export default function BillingPage({
   /* ---------------- Finalize sale against the real database ---------------- */
   const finalizeSale = async () => {
     if (cart.length === 0) return;
-    if (cashShort) return;
+    if (payment === "cash" && cashShort) return;
 
     setConfirming(true);
     setSaleError(null);
@@ -358,11 +426,10 @@ export default function BillingPage({
         throw new Error(data.error || "Couldn't complete the sale.");
       }
 
-      // Server response is the source of truth: real bill number, real
-      // stock-checked totals, real timestamp.
+
+      // Cash or Card sale confirmed immediately
       setReceipt(data.receipt);
       setShowConfirm(false);
-      // Refresh product list so stock levels reflect the sale just made.
       loadProducts();
     } catch (err) {
       setSaleError(err instanceof Error ? err.message : "Something went wrong finalizing the sale.");
@@ -370,6 +437,7 @@ export default function BillingPage({
       setConfirming(false);
     }
   };
+
 
   const startNewSale = () => {
     setCart([]);
@@ -401,7 +469,14 @@ export default function BillingPage({
 
   return (
     <div className="pos-ui min-h-screen" style={{ background: T.bg, color: T.ink }}>
-      <GlobalStyle />
+      <GlobalStyle themeTokens={T} />
+
+      <BarcodeScannerModal
+        open={scannerOpen}
+        onClose={() => setScannerOpen(false)}
+        onScan={handleBarcodeScanned}
+        title="Scan Barcode to Add Item to Bill"
+      />
 
       {/* Header */}
       <header
@@ -439,6 +514,26 @@ export default function BillingPage({
         {/* Left: product picker */}
         <div className="flex flex-col rounded-2xl min-w-0" style={{ background: T.surface, border: `1px solid ${T.border}` }}>
           <div className="p-4" style={{ borderBottom: `1px solid ${T.border}` }}>
+            {/* Scan Toast notification banner */}
+            {scanToast && (
+              <div
+                className="mb-3 flex items-center justify-between rounded-xl px-4 py-2.5 text-xs font-bold transition-all shadow-xs"
+                style={{
+                  background: scanToast.type === "success" ? T.goodSoft : T.badSoft,
+                  color: scanToast.type === "success" ? T.good : T.bad,
+                  border: `1px solid ${scanToast.type === "success" ? T.good : T.bad}`,
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  {scanToast.type === "success" ? <CheckCircle2 className="h-4 w-4" /> : <AlertTriangle className="h-4 w-4" />}
+                  <span>{scanToast.msg}</span>
+                </div>
+                <button onClick={() => setScanToast(null)} className="hover:opacity-70">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+
             <div
               className="flex items-center gap-2 rounded-xl px-4 py-2.5"
               style={{ background: T.surfaceAlt, border: `1.5px solid ${T.border}` }}
@@ -461,6 +556,16 @@ export default function BillingPage({
                   <X className="h-5 w-5" />
                 </button>
               )}
+              <button
+                type="button"
+                onClick={() => setScannerOpen(true)}
+                className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-bold transition shrink-0 hover:opacity-90"
+                style={{ background: T.accentSoft, color: T.accentDark, border: `1px solid ${T.accent}` }}
+                title="Open Camera Barcode Scanner"
+              >
+                <Camera className="h-4 w-4" />
+                <span className="hidden sm:inline">Camera Scan</span>
+              </button>
               <kbd
                 className="hidden rounded-md px-1.5 py-0.5 text-[10px] font-semibold sm:inline"
                 style={{ background: T.surface, border: `1px solid ${T.borderStrong}`, color: T.inkFaint }}
@@ -481,7 +586,7 @@ export default function BillingPage({
                     style={{
                       background: active ? T.accent : T.surfaceAlt,
                       color: active ? "#fff" : T.inkSoft,
-                      border: `1px solid ${active ? T.accent : T.border}`,
+                      border: `1px solid ${active ? T.accent : T.borderStrong}`,
                     }}
                   >
                     {cat}
@@ -661,26 +766,19 @@ export default function BillingPage({
 
           {/* Payment + discount + totals */}
           <div className="space-y-4 p-4 sm:p-5" style={{ borderTop: `1px solid ${T.border}` }}>
-            <div className="grid grid-cols-3 gap-2">
-              {PAYMENT_METHODS.map((m) => {
-                const Icon = m.icon;
-                const active = payment === m.id;
-                return (
-                  <button
-                    key={m.id}
-                    onClick={() => setPayment(m.id)}
-                    className="chip-btn pos-focus flex flex-col items-center gap-1 rounded-xl py-2.5 text-xs font-bold"
-                    style={{
-                      background: active ? T.accent : T.surfaceAlt,
-                      color: active ? "#fff" : T.inkSoft,
-                      border: `1.5px solid ${active ? T.accent : T.border}`,
-                    }}
-                  >
-                    <Icon className="h-4 w-4" />
-                    {m.label}
-                  </button>
-                );
-              })}
+            <div className="flex items-center justify-between p-3 rounded-xl border" style={{ background: T.surfaceAlt, borderColor: T.border }}>
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg text-white" style={{ background: T.accent }}>
+                  <Wallet className="h-4 w-4" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold block" style={{ color: T.ink }}>Cash Payment</span>
+                  <span className="text-[11px] text-slate-400">Cash-only counter settlement</span>
+                </div>
+              </div>
+              <span className="rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                Cash Only
+              </span>
             </div>
 
             <div className="flex items-center justify-between gap-3">
@@ -769,6 +867,8 @@ export default function BillingPage({
           onConfirm={finalizeSale}
         />
       )}
+
+
     </div>
   );
 }
@@ -825,22 +925,24 @@ function ConfirmSaleModal({
       onClick={(e) => { if (e.target === e.currentTarget) onEdit(); }}
     >
       <div
-        className="modal-card w-full max-w-[400px] overflow-hidden rounded-2xl"
+        className="modal-card w-full max-w-[440px] max-h-[90vh] flex flex-col overflow-hidden rounded-3xl"
         style={{ background: T.surface, boxShadow: "0 24px 48px -16px rgba(18,21,26,0.35)" }}
       >
-        <div className="flex flex-col items-center px-6 pb-5 pt-8 text-center" style={{ background: "linear-gradient(to bottom, #F8FAFC, #FFFFFF)" }}>
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full shadow-sm" style={{ background: T.goodSoft, border: `4px solid white` }}>
-            <CheckCircle2 className="h-8 w-8" style={{ color: T.good }} />
+        {/* Header */}
+        <div className="shrink-0 flex flex-col items-center px-6 pb-4 pt-6 text-center" style={{ background: "linear-gradient(to bottom, #F8FAFC, #FFFFFF)" }}>
+          <div className="mb-2.5 flex h-12 w-12 items-center justify-center rounded-full shadow-sm" style={{ background: T.goodSoft, border: `3px solid white` }}>
+            <CheckCircle2 className="h-6 w-6" style={{ color: T.good }} />
           </div>
-          <h2 id="confirm-sale-title" className="text-xl font-extrabold tracking-tight">Confirm sale</h2>
-          <p className="mt-1.5 max-w-[280px] text-sm" style={{ color: T.inkSoft }}>
+          <h2 id="confirm-sale-title" className="text-lg font-extrabold tracking-tight">Confirm sale</h2>
+          <p className="mt-1 max-w-[300px] text-xs font-medium" style={{ color: T.inkSoft }}>
             Review the bill details below. Inventory will be updated automatically.
           </p>
         </div>
 
-        <div className="px-6">
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto px-6 py-2">
           <div className="rounded-xl px-4 py-3" style={{ background: T.surfaceAlt, border: `1px solid ${T.border}` }}>
-            <div className="pt-1">
+            <div className="pt-0.5">
               <SummaryRow label="Items" value={itemCount} />
               <SummaryRow label="Subtotal" value={formatINR(subtotal)} />
               <SummaryRow label="Discount" value={discountAmt > 0 ? `-${formatINR(discountAmt)}` : formatINR(0)} valueColor={discountAmt > 0 ? T.good : T.ink} />
@@ -848,45 +950,47 @@ function ConfirmSaleModal({
               <SummaryRow label="Payment" value={PAYMENT_LABELS[payment] ?? payment} />
             </div>
             <div className="my-2 border-t border-dashed" style={{ borderColor: T.borderStrong }}></div>
-            <div className="flex items-center justify-between rounded-lg px-1 py-1.5">
-              <span className="text-[14px] font-bold" style={{ color: T.ink }}>Grand total</span>
-              <span className="pos-num text-2xl font-black" style={{ color: T.accentDark }}>{formatINR(total)}</span>
+            <div className="flex items-center justify-between rounded-lg px-1 py-1">
+              <span className="text-[13px] font-bold" style={{ color: T.ink }}>Grand total</span>
+              <span className="pos-num text-xl font-black" style={{ color: T.accentDark }}>{formatINR(total)}</span>
             </div>
           </div>
 
           {payment === "cash" && (
-            <div className="mt-4 rounded-xl px-4 py-4" style={{ background: T.surfaceAlt, border: `1px solid ${T.border}` }}>
-              <label className="mb-2 block text-[11.5px] font-bold uppercase tracking-wider" style={{ color: T.inkSoft }}>
+            <div className="mt-3 rounded-xl px-4 py-3" style={{ background: T.surfaceAlt, border: `1px solid ${T.border}` }}>
+              <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-wider" style={{ color: T.inkSoft }}>
                 Cash received
               </label>
-              <div className="flex items-center gap-2 rounded-xl px-4 py-3" style={{ background: T.surface, border: `2px solid ${cashShort ? T.bad : T.accentSoft}`, transition: "border-color 0.2s" }}>
-                <span className="pos-num text-lg font-bold" style={{ color: T.inkFaint }}>₹</span>
+              <div className="flex items-center gap-2 rounded-xl px-3.5 py-2.5" style={{ background: T.surface, border: `2px solid ${cashShort ? T.bad : T.accentSoft}`, transition: "border-color 0.2s" }}>
+                <span className="pos-num text-base font-bold" style={{ color: T.inkFaint }}>₹</span>
                 <input
                   type="number"
                   inputMode="decimal"
                   value={amountPaid}
                   onChange={(e) => setAmountPaid(e.target.value)}
-                  className="pos-num pos-focus w-full bg-transparent text-lg font-bold outline-none"
+                  className="pos-num pos-focus w-full bg-transparent text-base font-bold outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   style={{ color: T.ink }}
                   autoFocus
                 />
               </div>
               {cashShort ? (
-                <p className="mt-2 text-[13px] font-semibold" style={{ color: T.bad }}>
+                <p className="mt-1.5 text-xs font-semibold" style={{ color: T.bad }}>
                   Short by {formatINR(total - (Number(amountPaid) || 0))}
                 </p>
               ) : (
-                <div className="mt-3 flex items-center justify-between rounded-md px-2 py-1.5" style={{ background: T.goodSoft }}>
-                  <span className="text-[13px] font-bold" style={{ color: T.good }}>Balance to return</span>
-                  <span className="pos-num text-lg font-black" style={{ color: T.good }}>{formatINR(balanceDue)}</span>
+                <div className="mt-2 flex items-center justify-between rounded-lg px-3 py-1.5" style={{ background: T.goodSoft }}>
+                  <span className="text-xs font-bold" style={{ color: T.good }}>Balance to return</span>
+                  <span className="pos-num text-base font-black" style={{ color: T.good }}>{formatINR(balanceDue)}</span>
                 </div>
               )}
             </div>
           )}
 
+
+
           {saleError && (
             <div
-              className="mt-3 flex items-start gap-2 rounded-xl px-4 py-3 text-[13px] font-semibold"
+              className="mt-2.5 flex items-start gap-2 rounded-xl px-3.5 py-2.5 text-xs font-semibold"
               style={{ background: T.badSoft, color: T.bad, border: `1px solid ${T.bad}` }}
             >
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
@@ -895,11 +999,12 @@ function ConfirmSaleModal({
           )}
         </div>
 
-        <div className="flex gap-3 px-6 pb-6 pt-5">
+        {/* Footer */}
+        <div className="shrink-0 flex gap-3 px-6 py-4 border-t border-slate-100 dark:border-slate-800">
           <button
             onClick={onEdit}
             disabled={confirming}
-            className="cta-btn pos-focus flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold disabled:opacity-50"
+            className="cta-btn pos-focus flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold disabled:opacity-50"
             style={{ background: T.surfaceAlt, color: T.inkSoft, border: `1.5px solid ${T.border}` }}
           >
             <ArrowLeft className="h-4 w-4" /> Edit
@@ -907,7 +1012,7 @@ function ConfirmSaleModal({
           <button
             onClick={onConfirm}
             disabled={confirming || cashShort}
-            className="cta-btn pos-focus flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold disabled:opacity-70"
+            className="cta-btn pos-focus flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold disabled:opacity-70"
             style={{ background: T.good, color: "#fff" }}
           >
             {confirming ? (
@@ -916,7 +1021,10 @@ function ConfirmSaleModal({
                 Saving…
               </>
             ) : (
-              <><Check className="h-4 w-4" /> Confirm</>
+              <>
+                <Check className="h-4 w-4" />
+                Confirm Sale
+              </>
             )}
           </button>
         </div>

@@ -1,21 +1,21 @@
-@import "tailwindcss";
+@reference "../globals.css";
 
 /* Layout */
 
 .dashboard {
-    @apply block min-h-screen bg-gradient-to-br from-slate-50 to-slate-200 overflow-hidden w-full;
+    @apply block min-h-screen bg-slate-50 dark:bg-slate-950 w-full transition-colors duration-200;
 }
 
 .dark .dashboard {
-    @apply bg-none bg-slate-950;
-}
-
-.dark .main-content {
     @apply bg-slate-950;
 }
 
+.dark .main-content {
+    @apply bg-slate-950 text-slate-100;
+}
+
 .main-content {
-    @apply block ml-72 p-5 w-[calc(100%-18rem)] h-screen overflow-y-auto overflow-x-hidden;
+    @apply block ml-72 p-4 sm:p-6 min-h-screen transition-all duration-300;
 }
 
 /* Top Grid */

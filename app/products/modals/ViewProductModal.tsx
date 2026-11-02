@@ -29,9 +29,9 @@ import {
  */
 
 function statusClasses(status: string) {
-  if (status === "In Stock") return "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200";
-  if (status === "Low Stock") return "bg-amber-50 text-amber-600 ring-1 ring-amber-200";
-  return "bg-rose-50 text-rose-600 ring-1 ring-rose-200";
+  if (status === "In Stock") return "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:ring-emerald-800/60";
+  if (status === "Low Stock") return "bg-amber-50 text-amber-600 ring-1 ring-amber-200 dark:bg-amber-950/60 dark:text-amber-400 dark:ring-amber-800/60";
+  return "bg-rose-50 text-rose-600 ring-1 ring-rose-200 dark:bg-rose-950/60 dark:text-rose-400 dark:ring-rose-800/60";
 }
 
 function statusDot(status: string) {
@@ -75,39 +75,39 @@ export default function ViewProductModal({ open, product, onClose }: ViewProduct
       <div onClick={onClose} className="absolute inset-0 bg-slate-950/70 backdrop-blur-md" />
 
       {/* Modal */}
-      <div className="relative flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-3xl bg-white dark:bg-slate-900 shadow-2xl ring-1 ring-black/5">
-        {/* Header */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-7 pb-8 pt-6">
+      <div className="relative flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-3xl bg-white dark:bg-slate-900 shadow-2xl ring-1 ring-black/5 dark:ring-slate-800">
+        {/* Header (shrink-0 prevents flex shrink clipping) */}
+        <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-6 py-5 border-b border-slate-800">
           <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-blue-500/20 blur-3xl" />
           <div className="pointer-events-none absolute -left-8 bottom-0 h-28 w-28 rounded-full bg-indigo-500/10 blur-2xl" />
 
           <div className="relative flex items-start justify-between">
-            <span className="rounded-full bg-white dark:bg-slate-900/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white/70 ring-1 ring-white/10">
+            <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white/90 ring-1 ring-white/15">
               Grocery item details
             </span>
 
             <button
               onClick={onClose}
               aria-label="Close"
-              className="rounded-full bg-white/10 p-2 text-white/70 backdrop-blur transition hover:bg-white dark:bg-slate-900/20 hover:text-white"
+              className="rounded-full bg-white/10 p-2 text-white/70 backdrop-blur transition hover:bg-white/20 hover:text-white"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
 
-          <div className="relative mt-5 flex items-center gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white dark:bg-slate-900/10 ring-1 ring-white/15">
-              <Package className="h-6 w-6 text-white" />
+          <div className="relative mt-4 flex items-center gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20">
+              <Package className="h-5 w-5 text-white" />
             </div>
             <div className="min-w-0">
-              <h3 className="truncate text-xl font-bold text-white">{product.name}</h3>
-              <p className="text-sm font-medium text-white/50">{product.id}</p>
+              <h3 className="truncate text-xl font-bold text-white leading-tight">{product.name}</h3>
+              <p className="text-xs font-medium text-white/60 mt-0.5">{product.id}</p>
             </div>
           </div>
         </div>
 
         {/* Body */}
-        <div className="flex-1 space-y-4 overflow-y-auto px-7 py-6">
+        <div className="flex-1 space-y-4 overflow-y-auto p-6">
           {/* Status + Category + Unit badges */}
           <div className="flex flex-wrap items-center gap-2">
             <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${statusClasses(product.status)}`}>
@@ -115,13 +115,13 @@ export default function ViewProductModal({ open, product, onClose }: ViewProduct
               {product.status}
             </span>
 
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300">
               <Tag className="h-3.5 w-3.5 text-slate-400" />
               {product.category}
             </span>
 
             {product.unit && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-600">
+              <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 dark:bg-blue-950/60 px-3 py-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400">
                 {product.unit}
               </span>
             )}
@@ -129,7 +129,7 @@ export default function ViewProductModal({ open, product, onClose }: ViewProduct
 
           {/* Price comparison */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 p-4">
+            <div className="rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/80 p-4">
               <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400">
                 <TrendingDown className="h-3.5 w-3.5" />
                 Buy price
@@ -139,12 +139,12 @@ export default function ViewProductModal({ open, product, onClose }: ViewProduct
               </p>
             </div>
 
-            <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4">
-              <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-emerald-500">
+            <div className="rounded-2xl border border-emerald-100 dark:border-emerald-900/40 bg-emerald-50/60 dark:bg-emerald-950/40 p-4">
+              <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-emerald-500 dark:text-emerald-400">
                 <TrendingUp className="h-3.5 w-3.5" />
                 Sell price
               </div>
-              <p className="mt-2 text-2xl font-bold text-emerald-600">
+              <p className="mt-2 text-2xl font-bold text-emerald-600 dark:text-emerald-400">
                 ₹{product.sellPrice.toLocaleString("en-IN")}
               </p>
             </div>
@@ -153,7 +153,7 @@ export default function ViewProductModal({ open, product, onClose }: ViewProduct
           {margin !== null && (
             <div className="flex items-center justify-between rounded-2xl border border-slate-100 dark:border-slate-800 px-4 py-3">
               <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">Margin</span>
-              <span className={`text-sm font-bold ${Number(margin) >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
+              <span className={`text-sm font-bold ${Number(margin) >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
                 {margin}%
               </span>
             </div>
@@ -167,7 +167,7 @@ export default function ViewProductModal({ open, product, onClose }: ViewProduct
                 {product.stock} {product.unit ?? "units"}
               </span>
             </div>
-            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
               <div
                 className={`h-full rounded-full transition-all ${
                   product.status === "In Stock"
@@ -191,10 +191,10 @@ export default function ViewProductModal({ open, product, onClose }: ViewProduct
               <div
                 className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold ${
                   expired
-                    ? "bg-red-50 text-red-600"
+                    ? "bg-red-50 text-red-600 dark:bg-red-950/60 dark:text-red-400"
                     : expiringSoon
-                    ? "bg-orange-50 text-orange-600"
-                    : "bg-green-50 text-green-700"
+                    ? "bg-orange-50 text-orange-600 dark:bg-orange-950/60 dark:text-orange-400"
+                    : "bg-green-50 text-green-700 dark:bg-emerald-950/60 dark:text-emerald-400"
                 }`}
               >
                 <Calendar className="h-3.5 w-3.5" />
@@ -241,11 +241,11 @@ export default function ViewProductModal({ open, product, onClose }: ViewProduct
           )}
         </div>
 
-        {/* Footer */}
-        <div className="border-t border-slate-100 dark:border-slate-800 px-7 py-5">
+        {/* Footer (shrink-0 keeps action buttons pinned) */}
+        <div className="shrink-0 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/80 px-6 py-4 backdrop-blur-md">
           <button
             onClick={onClose}
-            className="w-full rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+            className="w-full rounded-xl bg-slate-900 dark:bg-slate-800 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-slate-800 dark:hover:bg-slate-700 active:scale-95"
           >
             Close
           </button>

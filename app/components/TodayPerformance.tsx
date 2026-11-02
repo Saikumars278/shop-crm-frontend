@@ -11,8 +11,8 @@ import {
   FiClock,
   FiCheckCircle,
   FiPackage,
+  FiTarget,
   FiAward,
-  FiUsers,
 } from "react-icons/fi";
 
 interface PerfData {
@@ -24,144 +24,12 @@ interface PerfData {
   bills_delta: number;
   avg_bill_delta: number;
 
-  // footer stats
   profit: number;
   last_bill_time: string;
-
   completed_bills: number;
   items_sold: number;
-
   highest_bill: number;
   customers_count: number;
-
-  today_day: string;
-  days_in_month: number;
-}
-
-function TrendBadge({ value }: { value: number }) {
-  const isUp = value >= 0;
-  return (
-    <span
-      className={
-        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold " +
-        (isUp
-          ? "bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400"
-          : "bg-red-100 text-red-600 dark:bg-red-950/40 dark:text-red-400")
-      }
-    >
-      {isUp ? <FiTrendingUp size={11} /> : <FiTrendingDown size={11} />}
-      {isUp ? "+" : ""}
-      {value}%
-    </span>
-  );
-}
-
-function FooterStat({
-  icon: Icon,
-  label,
-  value,
-  align = "left",
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: string;
-  align?: "left" | "right";
-}) {
-  return (
-    <div
-      className={
-        "flex items-center gap-2 " +
-        (align === "right" ? "justify-end text-right" : "justify-start text-left")
-      }
-    >
-      <Icon
-        className="shrink-0 text-slate-400 dark:text-slate-500 dark:text-slate-400"
-        size={12}
-      />
-      <div>
-        <p className="text-[11px] font-medium leading-tight text-slate-500 dark:text-slate-400 dark:text-slate-400">
-          {label}
-        </p>
-        <p className="text-sm font-bold leading-tight text-slate-800 dark:text-white dark:text-white">
-          {value}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function KpiCard({
-  icon: Icon,
-  label,
-  gradient,
-  value,
-  comparison,
-  delta,
-  leftIcon,
-  leftLabel,
-  leftValue,
-  rightIcon,
-  rightLabel,
-  rightValue,
-}: {
-  icon: React.ElementType;
-  label: string;
-  gradient: string;
-  value: string;
-  comparison: string;
-  delta: number;
-  leftIcon: React.ElementType;
-  leftLabel: string;
-  leftValue: string;
-  rightIcon: React.ElementType;
-  rightLabel: string;
-  rightValue: string;
-}) {
-  return (
-    <div className="group overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-700 dark:bg-slate-900">
-      {/* Top section */}
-      <div className="p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div
-              className={
-                "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-r " +
-                gradient +
-                " text-white shadow-sm transition-transform duration-300 group-hover:scale-110"
-              }
-            >
-              <Icon size={13} />
-            </div>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 dark:text-slate-400">
-              {label}
-            </p>
-          </div>
-          <TrendBadge value={delta} />
-        </div>
-
-        <h3 className="mt-3 text-xl font-bold tracking-tight text-slate-900 dark:text-white dark:text-white">
-          {value}
-        </h3>
-        <p className="mt-1 text-xs font-medium text-slate-400 dark:text-slate-500 dark:text-slate-400">
-          {comparison}
-        </p>
-      </div>
-
-      {/* Divider */}
-      <div className="border-t border-slate-100 dark:border-slate-800 dark:border-slate-800" />
-
-      {/* Footer section */}
-      <div className="grid grid-cols-2 gap-2 bg-slate-50 dark:bg-slate-800/60 px-4 py-2.5 dark:bg-slate-800/30">
-        <FooterStat icon={leftIcon} label={leftLabel} value={leftValue} />
-        <FooterStat
-          icon={rightIcon}
-          label={rightLabel}
-          value={rightValue}
-          align="right"
-        />
-      </div>
-    </div>
-  );
 }
 
 export default function TodayPerformance() {
@@ -193,98 +61,163 @@ export default function TodayPerformance() {
     };
   }, []);
 
-  const rupee = (n: number) =>
-    "\u20b9" + n.toLocaleString("en-IN", { maximumFractionDigits: 0 });
+  const formatCurrency = (n: number) =>
+    "₹" + n.toLocaleString("en-IN", { maximumFractionDigits: 0 });
+
+  const dailyTarget = 20000;
+  const currentRev = data?.today_revenue ?? 0;
+  const targetPct = Math.min(Math.round((currentRev / dailyTarget) * 100), 100);
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 bg-gradient-to-r from-amber-50 to-orange-50 p-4 dark:border-slate-800 dark:from-amber-950/30 dark:to-orange-950/30">
+    <div className="flex flex-col h-full overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition-all duration-200">
+      {/* ─── Header ─────────────────────────────────────── */}
+      <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-5 py-4 bg-gradient-to-r from-amber-50/80 to-orange-50/80 dark:from-amber-950/20 dark:to-orange-950/20">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white shadow-md">
             <FiSun size={18} />
           </div>
           <div>
-            <h2 className="text-base font-bold text-slate-800 dark:text-white dark:text-white">
+            <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100 leading-tight">
               Today's Performance
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400">
-              Live business pulse — updates every 30s
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              Live business pulse & daily target
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2 rounded-full bg-white dark:bg-slate-900 px-4 py-2 shadow-sm dark:bg-slate-800">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
+
+        <div className="flex items-center gap-1.5 rounded-full bg-white dark:bg-slate-800 px-3 py-1 border border-slate-200 dark:border-slate-700 shadow-2xs">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
           </span>
-          <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 dark:text-slate-200">
+          <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200">
             Live
           </span>
         </div>
       </div>
 
-      {/* KPI Grid */}
-      <div className="p-4">
+      {/* ─── Body Content ───────────────────────────────── */}
+      <div className="p-4 sm:p-5 flex-1 space-y-4">
+        {/* 1. Daily Sales Target Widget */}
+        <div className="rounded-xl border border-amber-100 dark:border-amber-900/40 bg-amber-50/50 dark:bg-amber-950/30 p-3.5">
+          <div className="flex items-center justify-between text-xs font-bold mb-1.5">
+            <span className="flex items-center gap-1.5 text-amber-800 dark:text-amber-300">
+              <FiTarget size={14} className="text-amber-500" /> Daily Target (₹20,000)
+            </span>
+            <span className="text-amber-700 dark:text-amber-400">{targetPct}% Achieved</span>
+          </div>
+
+          <div className="h-2.5 w-full overflow-hidden rounded-full bg-amber-200/60 dark:bg-slate-700">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-700"
+              style={{ width: `${Math.max(targetPct, 3)}%` }}
+            />
+          </div>
+
+          <div className="flex justify-between items-center text-[10px] font-semibold text-slate-400 mt-1.5">
+            <span>Progress: {formatCurrency(currentRev)}</span>
+            <span>Target: ₹20,000</span>
+          </div>
+        </div>
+
+        {/* 2. Vertical Metric Cards (Clean & Responsive) */}
         {loading || !data ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="space-y-3">
             {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="animate-pulse rounded-2xl border border-slate-200 dark:border-slate-700 p-4 dark:border-slate-700"
-              >
-                <div className="h-3 w-1/2 rounded bg-slate-200 dark:bg-slate-700" />
-                <div className="mt-4 h-8 w-2/3 rounded bg-slate-200 dark:bg-slate-700" />
-                <div className="mt-4 h-6 rounded bg-slate-200 dark:bg-slate-700" />
-              </div>
+              <div key={i} className="animate-pulse h-16 rounded-xl bg-slate-100 dark:bg-slate-800" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <KpiCard
-              icon={FiDollarSign}
-              label="Today Revenue"
-              gradient="from-orange-500 to-amber-400"
-              value={rupee(data.today_revenue)}
-              comparison="vs yesterday"
-              delta={data.revenue_delta}
-              leftIcon={FiDollarSign}
-              leftLabel="Profit"
-              leftValue={rupee(data.profit ?? 0)}
-              rightIcon={FiClock}
-              rightLabel="Last Bill"
-              rightValue={data.last_bill_time ?? "--"}
-            />
-            <KpiCard
-              icon={FiFileText}
-              label="Bills Created"
-              gradient="from-blue-500 to-cyan-500"
-              value={String(data.today_bills)}
-              comparison="vs yesterday"
-              delta={data.bills_delta}
-              leftIcon={FiCheckCircle}
-              leftLabel="Completed"
-              leftValue={String(data.completed_bills ?? 0)}
-              rightIcon={FiPackage}
-              rightLabel="Items Sold"
-              rightValue={String(data.items_sold ?? 0)}
-            />
-            <KpiCard
-              icon={FiCreditCard}
-              label="Avg Bill Value"
-              gradient="from-emerald-500 to-teal-500"
-              value={rupee(data.today_avg_bill)}
-              comparison="vs yesterday"
-              delta={data.avg_bill_delta}
-              leftIcon={FiAward}
-              leftLabel="Highest Bill"
-              leftValue={rupee(data.highest_bill ?? 0)}
-              rightIcon={FiUsers}
-              rightLabel="Customers"
-              rightValue={String(data.customers_count ?? 0)}
-            />
+          <div className="space-y-3">
+            {/* Card 1: Today Revenue */}
+            <div className="group flex items-center justify-between rounded-xl border border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-800/40 p-3 transition-all hover:border-amber-200 dark:hover:border-amber-900 hover:bg-white dark:hover:bg-slate-800">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-orange-100 text-orange-600 dark:bg-orange-900/40 dark:text-orange-400 font-bold">
+                  <FiDollarSign size={16} />
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                    Today Revenue
+                  </p>
+                  <h3 className="text-base font-black text-slate-800 dark:text-slate-100 leading-tight">
+                    {formatCurrency(data.today_revenue)}
+                  </h3>
+                </div>
+              </div>
+
+              <div className="text-right text-[11px]">
+                <span className="font-semibold text-slate-500 dark:text-slate-400 block">
+                  Profit: <span className="text-emerald-600 font-bold">{formatCurrency(data.profit ?? 0)}</span>
+                </span>
+                <span className="text-[10px] text-slate-400 block mt-0.5">
+                  Last Bill: {data.last_bill_time ?? "--"}
+                </span>
+              </div>
+            </div>
+
+            {/* Card 2: Bills Created */}
+            <div className="group flex items-center justify-between rounded-xl border border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-800/40 p-3 transition-all hover:border-blue-200 dark:hover:border-blue-900 hover:bg-white dark:hover:bg-slate-800">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400 font-bold">
+                  <FiFileText size={16} />
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                    Bills Created
+                  </p>
+                  <h3 className="text-base font-black text-slate-800 dark:text-slate-100 leading-tight">
+                    {data.today_bills}
+                  </h3>
+                </div>
+              </div>
+
+              <div className="text-right text-[11px]">
+                <span className="font-semibold text-slate-500 dark:text-slate-400 block">
+                  Items Sold: <span className="text-slate-700 dark:text-slate-200 font-bold">{data.items_sold ?? 0}</span>
+                </span>
+                <span className="text-[10px] text-slate-400 block mt-0.5">
+                  Completed: {data.completed_bills ?? 0}
+                </span>
+              </div>
+            </div>
+
+            {/* Card 3: Avg Bill Value */}
+            <div className="group flex items-center justify-between rounded-xl border border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-800/40 p-3 transition-all hover:border-emerald-200 dark:hover:border-emerald-900 hover:bg-white dark:hover:bg-slate-800">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400 font-bold">
+                  <FiCreditCard size={16} />
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                    Avg Bill Value
+                  </p>
+                  <h3 className="text-base font-black text-slate-800 dark:text-slate-100 leading-tight">
+                    {formatCurrency(data.today_avg_bill)}
+                  </h3>
+                </div>
+              </div>
+
+              <div className="text-right text-[11px]">
+                <span className="font-semibold text-slate-500 dark:text-slate-400 block">
+                  Highest: <span className="text-blue-600 font-bold">{formatCurrency(data.highest_bill ?? 0)}</span>
+                </span>
+                <span className="text-[10px] text-slate-400 block mt-0.5">
+                  Customers: {data.customers_count ?? 0}
+                </span>
+              </div>
+            </div>
           </div>
         )}
+      </div>
+
+      {/* ─── Footer ─────────────────────────────────────── */}
+      <div className="border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 px-5 py-2.5 flex items-center justify-between text-[11px] text-slate-400">
+        <span className="flex items-center gap-1">
+          <FiCheckCircle size={12} className="text-amber-500" />
+          Goal: 750 Monthly Bills
+        </span>
+        <span>Updates Live</span>
       </div>
     </div>
   );

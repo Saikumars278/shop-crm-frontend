@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { CheckCircle2, Printer, RotateCcw } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -146,13 +147,38 @@ const PAYMENT_LABELS: Record<string, string> = { cash: "Cash", card: "Card", upi
 
 export default function BillPrintPreview({
   receipt = DEMO_RECEIPT,
-  storeName = "Ganesh General Store",
+  storeName = "Sai General Store",
   storeTagline = "Grocery & Daily Essentials",
-  storeAddress = "12, Main Road, Chennai - 600001",
+  storeAddress = "12, Main Road, Nagercoil - 629001",
   storePhone = "+91 98765 43210",
   storeGST = "33ABCDE1234F1Z5",
   onNewSale,
 }: BillPrintPreviewProps) {
+  const [activeName, setActiveName] = useState(storeName);
+  const [activeAddr, setActiveAddr] = useState(storeAddress);
+  const [activeGstin, setActiveGstin] = useState(storeGST);
+  const [activeFooter, setActiveFooter] = useState("THANK YOU • VISIT AGAIN");
+  const [activeTerms, setActiveTerms] = useState("Exchange within 3 days\nKeep this bill safely");
+
+  useEffect(() => {
+    const loadSettings = () => {
+      try {
+        const local = localStorage.getItem("shop_settings");
+        if (local) {
+          const parsed = JSON.parse(local);
+          if (parsed.shop_name) setActiveName(parsed.shop_name);
+          if (parsed.shop_address) setActiveAddr(parsed.shop_address);
+          if (parsed.gstin) setActiveGstin(parsed.gstin);
+          if (parsed.footer_message) setActiveFooter(parsed.footer_message);
+          if (parsed.terms_conditions) setActiveTerms(parsed.terms_conditions);
+        }
+      } catch (e) {}
+    };
+    loadSettings();
+    window.addEventListener("settingsUpdated", loadSettings);
+    return () => window.removeEventListener("settingsUpdated", loadSettings);
+  }, [storeName, storeAddress]);
+
   const itemCount = receipt.items.reduce((sum, i) => sum + n(i.qty), 0);
   const isCash = receipt.payment === "cash";
 
@@ -165,11 +191,11 @@ export default function BillPrintPreview({
 
   const lines: string[] = [];
   lines.push(BORDER);
-  lines.push(centerText(storeName.toUpperCase()));
+  lines.push(centerText(activeName.toUpperCase()));
   if (storeTagline) lines.push(centerText(storeTagline));
-  if (storeAddress) lines.push(centerText(storeAddress));
+  if (activeAddr) lines.push(centerText(activeAddr));
   if (storePhone) lines.push(centerText(`Ph: ${storePhone}`));
-  if (storeGST) lines.push(centerText(`GSTIN: ${storeGST}`));
+  if (activeGstin) lines.push(centerText(`GSTIN: ${activeGstin}`));
   lines.push(DIVIDER);
   lines.push(metaRow("Invoice No", receipt.id));
   lines.push(metaRow("Date", receipt.date));
@@ -200,9 +226,12 @@ export default function BillPrintPreview({
     lines.push(DIVIDER);
   }
   lines.push("");
-  lines.push(centerText("THANK YOU • VISIT AGAIN"));
-  lines.push(centerText("Exchange within 3 days"));
-  lines.push(centerText("Keep this bill safely"));
+  if (activeFooter) {
+    activeFooter.split("\n").forEach((line) => lines.push(centerText(line)));
+  }
+  if (activeTerms) {
+    activeTerms.split("\n").forEach((line) => lines.push(centerText(line)));
+  }
   lines.push(BORDER);
 
   const receiptText = lines.join("\n");
