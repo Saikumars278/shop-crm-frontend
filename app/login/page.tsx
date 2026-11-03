@@ -442,7 +442,7 @@ export default function LoginPage() {
       {/* ========================================================= */}
       {/* RIGHT PANEL — AUTHENTICATION CONTAINER                    */}
       {/* ========================================================= */}
-      <div className="flex w-full items-center justify-center px-6 py-12 lg:w-1/2">
+      <div className="flex w-full items-center justify-center px-4 py-8 sm:px-6 sm:py-12 lg:w-1/2">
         <div className="w-full max-w-md">
           {/* Mobile Brand Mark */}
           <div className="mb-8 flex items-center gap-3 lg:hidden">
@@ -455,7 +455,7 @@ export default function LoginPage() {
           </div>
 
           {/* Glass Form Card Wrapper */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-8 shadow-xl shadow-slate-200/50 dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-none">
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-8 shadow-xl shadow-slate-200/50 dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-none">
             {/* Step Progress Header for Forgot Password */}
             {mode !== "login" && mode !== "forgot-success" && (
               <div className="mb-6 border-b border-slate-100 dark:border-slate-800 pb-5">
@@ -724,7 +724,7 @@ export default function LoginPage() {
                     </label>
 
                     {/* OTP Digit Input Boxes */}
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center justify-between gap-1.5 sm:gap-2">
                       {otpDigits.map((digit, idx) => (
                         <input
                           key={idx}
@@ -738,7 +738,7 @@ export default function LoginPage() {
                           onChange={(e) => handleOtpChange(idx, e.target.value)}
                           onKeyDown={(e) => handleOtpKeyDown(idx, e)}
                           onPaste={idx === 0 ? handleOtpPaste : undefined}
-                          className={`h-12 w-11 rounded-xl border text-center text-xl font-bold transition outline-none shadow-sm ${
+                          className={`h-10 w-8 xs:w-9 sm:h-12 sm:w-11 rounded-xl border text-center text-base sm:text-xl font-bold transition outline-none shadow-sm ${
                             digit
                               ? "border-blue-600 bg-blue-50/40 text-blue-900 dark:border-blue-500 dark:bg-blue-950/30 dark:text-white"
                               : "border-slate-300 bg-slate-50/50 text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-white"

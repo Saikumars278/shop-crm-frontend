@@ -3,11 +3,11 @@
 /* Layout */
 
 .dashboard {
-    @apply block min-h-screen bg-slate-50 dark:bg-slate-950 w-full transition-colors duration-200;
+    @apply block min-h-screen bg-slate-50 dark:bg-slate-950 w-full max-w-full transition-colors duration-200 overflow-x-hidden;
 }
 
 .dark .dashboard {
-    @apply bg-slate-950;
+    @apply block min-h-screen bg-slate-50 dark:bg-slate-950 w-full max-w-full transition-colors duration-200 overflow-x-hidden;
 }
 
 .dark .main-content {
@@ -15,37 +15,59 @@
 }
 
 .main-content {
-    @apply block ml-72 p-4 sm:p-6 min-h-screen transition-all duration-300;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    padding: 0.875rem;
+}
+
+@media (min-width: 640px) {
+    .main-content {
+        padding: 1.25rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .main-content {
+        margin-left: 18rem;
+        width: calc(100% - 18rem);
+        max-width: calc(100% - 18rem);
+        padding: 1.5rem;
+    }
 }
 
 /* Top Grid */
 
 .dashboard-grid {
-    @apply grid grid-cols-1 xl:grid-cols-2 gap-6;
+    @apply grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6;
 }
 
 /* Bottom Layout */
 
 .dashboard-flex {
-    @apply flex flex-col xl:flex-row gap-6;
+    @apply flex flex-col xl:flex-row gap-4 sm:gap-6;
 }
 
 .dashboard-column {
-    @apply flex-1 flex flex-col gap-6 min-w-0;
+    @apply flex-1 flex flex-col gap-4 sm:gap-6 min-w-0;
 }
 
 /* Shop Summary */
 
 .shop-summary {
-    @apply bg-white rounded-2xl border border-slate-200 shadow-sm p-5;
+    @apply bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-5;
 }
 
 .summary-title {
-    @apply text-xl font-bold text-slate-800 mb-4;
+    @apply text-lg sm:text-xl font-bold text-slate-800 dark:text-white mb-3 sm:mb-4;
 }
 
 .summary-row {
-    @apply flex justify-between items-center py-3 border-b border-slate-200;
+    @apply flex justify-between items-center py-2.5 sm:py-3 border-b border-slate-200 dark:border-slate-800;
 }
 
 .summary-row:last-child {
@@ -53,39 +75,21 @@
 }
 
 .summary-label {
-    @apply text-sm text-slate-600 font-medium;
+    @apply text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium;
 }
 
 .summary-value {
-    @apply text-base font-bold text-slate-900;
+    @apply text-sm sm:text-base font-bold text-slate-900 dark:text-white;
 }
 
 .summary-green {
-    @apply text-green-600;
+    @apply text-green-600 dark:text-green-400;
 }
 
 .summary-red {
-    @apply text-red-600;
+    @apply text-red-600 dark:text-red-400;
 }
 
 .summary-blue {
-    @apply text-blue-600;
-}
-
-/* Responsive */
-
-@media (max-width:1024px) {
-    .main-content {
-        @apply ml-0 w-full;
-    }
-
-    .dashboard-flex {
-        @apply flex-col;
-    }
-}
-
-@media (max-width:640px) {
-    .main-content {
-        @apply p-4;
-    }
+    @apply text-blue-600 dark:text-blue-400;
 }

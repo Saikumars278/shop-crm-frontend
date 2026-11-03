@@ -1,5 +1,84 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   Global Responsive Architecture & Standards
+   ========================================================================== */
+
+/* Universal Box Sizing & Fluid Root Container */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Reusable CRM Main Content Responsive Layout (Desktop Sidebar + Mobile Drawer) */
+.crm-main-content {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  padding: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .crm-main-content {
+    padding: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .crm-main-content {
+    margin-left: 18rem;
+    width: calc(100% - 18rem);
+    max-width: calc(100% - 18rem);
+    padding: 1.5rem;
+  }
+}
+
+/* Fluid variant for full-bleed pages like POS Billing */
+.crm-main-fluid {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+@media (min-width: 1024px) {
+  .crm-main-fluid {
+    margin-left: 18rem;
+    width: calc(100% - 18rem);
+    max-width: calc(100% - 18rem);
+  }
+}
+
+/* Reusable Responsive Table Container (scrolls internally without page stretch) */
+.crm-table-container {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Reusable Fluid Grid Item Constraint */
+.crm-grid-item {
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
 @variant dark (.dark &);
 
 /* Smooth theme transitions on color properties */

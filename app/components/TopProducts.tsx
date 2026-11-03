@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiPackage, FiClock, FiTrendingUp, FiAward, FiCpu, FiStar, FiShoppingBag } from "react-icons/fi";
+import { FiClock, FiAward, FiCpu, FiShoppingBag } from "react-icons/fi";
 
 interface Product {
   rank: number;

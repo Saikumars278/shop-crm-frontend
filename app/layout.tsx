@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/app/components/ThemeProvider";
+import { SidebarProvider } from "@/app/components/SidebarContext";
 import Chatbot from "@/app/components/Chatbot";
 
 const geistSans = Geist({
@@ -52,8 +53,10 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-white dark:bg-slate-900 dark:bg-slate-950">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-          {children}
-          <Chatbot />
+          <SidebarProvider>
+            {children}
+            <Chatbot />
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>

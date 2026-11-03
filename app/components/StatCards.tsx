@@ -77,8 +77,8 @@ function SkeletonCard() {
   return (
     <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
       <div className="animate-pulse">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between gap-1.5 min-w-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
             <div className="h-11 w-11 rounded-xl bg-slate-200 dark:bg-slate-700" />
             <div className="h-3 w-20 rounded bg-slate-200 dark:bg-slate-700" />
           </div>
@@ -154,7 +154,7 @@ export default function StatCards() {
 
   if (loading) {
     return (
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4 lg:gap-3.5 xl:gap-5 w-full min-w-0">
         {Array.from({ length: 4 }).map((_, index) => (
           <SkeletonCard key={index} />
         ))}
@@ -251,7 +251,7 @@ export default function StatCards() {
   ];
 
   return (
-    <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <section className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4 lg:gap-3.5 xl:gap-5 w-full min-w-0">
       {stats.map((item) => {
         const Icon = item.icon;
         const isNoChange = item.rawGrowth === 0;
@@ -277,23 +277,23 @@ export default function StatCards() {
         return (
           <div
             key={item.title}
-            className="rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-900 p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition-shadow duration-200 hover:shadow-[0_4px_14px_rgba(15,23,42,0.08)] dark:border-slate-700/80 dark:bg-slate-900 dark:shadow-[0_1px_3px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_4px_14px_rgba(0,0,0,0.4)]"
+            className="flex flex-col justify-between rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-900 p-3 sm:p-4 lg:p-3.5 xl:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition-all duration-200 hover:shadow-[0_4px_14px_rgba(15,23,42,0.08)] dark:border-slate-700/80 dark:bg-slate-900 dark:shadow-[0_1px_3px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_4px_14px_rgba(0,0,0,0.4)] min-w-0 w-full"
           >
             {/* Header */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between gap-1.5 min-w-0">
+              <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
                 <span
-                  className={`flex h-11 w-11 items-center justify-center rounded-xl ${item.solid} text-white shadow-sm`}
+                  className={`flex h-8 w-8 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl ${item.solid} text-white shadow-sm`}
                 >
                   <Icon size={18} strokeWidth={2} />
                 </span>
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 dark:text-slate-400">
+                <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
                   {item.title}
                 </p>
               </div>
 
               <span
-                className={`inline-flex items-center gap-0.5 rounded-full ${growthBg} px-2 py-0.5 text-[11px] font-semibold ${growthColor}`}
+                className={`inline-flex shrink-0 items-center gap-0.5 rounded-full ${growthBg} px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-[11px] font-semibold ${growthColor}`}
               >
                 <GrowthIcon size={11} />
                 {item.growth}
@@ -301,17 +301,17 @@ export default function StatCards() {
             </div>
 
             {/* Value */}
-            <div className="mt-4">
-              <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white dark:text-white">
+            <div className="mt-2.5 sm:mt-3 xl:mt-4 min-w-0">
+              <h2 className="text-lg sm:text-xl xl:text-2xl font-black tracking-tight text-slate-900 dark:text-white truncate">
                 {item.value}
               </h2>
-              <p className="mt-0.5 text-[11px] text-slate-400 dark:text-slate-500 dark:text-slate-400">
+              <p className="mt-0.5 text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 truncate">
                 {item.subtitle}
               </p>
             </div>
 
             {/* Bottom section */}
-            <div className="mt-5 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4 dark:border-slate-800">
+            <div className="mt-3 sm:mt-4 xl:mt-5 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-2.5 sm:pt-3 xl:pt-4 text-[10px] sm:text-[11px] min-w-0 gap-1">
               {item.bottom.type === "health" ? (
                 <>
                   <HealthBadge healthy={item.bottom.healthy} />
@@ -324,7 +324,7 @@ export default function StatCards() {
                 </>
               ) : (
                 <>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-2.5 py-1 text-[11px] font-semibold text-violet-600 dark:bg-violet-950/40 dark:text-violet-400">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-2 py-0.5 text-[10px] sm:text-[11px] font-semibold text-violet-600 dark:bg-violet-950/40 dark:text-violet-400 truncate">
                     <FiCreditCard size={11} />
                     {item.bottom.profitLabel}: {item.bottom.profitValue}
                   </span>

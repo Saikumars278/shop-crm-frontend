@@ -6,13 +6,8 @@ import {
   FiDollarSign,
   FiFileText,
   FiCreditCard,
-  FiTrendingUp,
-  FiTrendingDown,
-  FiClock,
   FiCheckCircle,
-  FiPackage,
   FiTarget,
-  FiAward,
 } from "react-icons/fi";
 
 interface PerfData {
@@ -69,7 +64,7 @@ export default function TodayPerformance() {
   const targetPct = Math.min(Math.round((currentRev / dailyTarget) * 100), 100);
 
   return (
-    <div className="flex flex-col h-full overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition-all duration-200">
+    <div className="flex flex-col h-full w-full min-w-0 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition-all duration-200">
       {/* ─── Header ─────────────────────────────────────── */}
       <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-5 py-4 bg-gradient-to-r from-amber-50/80 to-orange-50/80 dark:from-amber-950/20 dark:to-orange-950/20">
         <div className="flex items-center gap-3">
@@ -98,7 +93,7 @@ export default function TodayPerformance() {
       </div>
 
       {/* ─── Body Content ───────────────────────────────── */}
-      <div className="p-4 sm:p-5 flex-1 space-y-4">
+      <div className="p-3.5 sm:p-5 flex-1 space-y-3.5 sm:space-y-4 min-w-0">
         {/* 1. Daily Sales Target Widget */}
         <div className="rounded-xl border border-amber-100 dark:border-amber-900/40 bg-amber-50/50 dark:bg-amber-950/30 p-3.5">
           <div className="flex items-center justify-between text-xs font-bold mb-1.5">
@@ -123,13 +118,13 @@ export default function TodayPerformance() {
 
         {/* 2. Vertical Metric Cards (Clean & Responsive) */}
         {loading || !data ? (
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-1 gap-2.5 sm:gap-3 min-w-0">
             {[0, 1, 2].map((i) => (
               <div key={i} className="animate-pulse h-16 rounded-xl bg-slate-100 dark:bg-slate-800" />
             ))}
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-1 gap-2.5 sm:gap-3 min-w-0">
             {/* Card 1: Today Revenue */}
             <div className="group flex items-center justify-between rounded-xl border border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-800/40 p-3 transition-all hover:border-amber-200 dark:hover:border-amber-900 hover:bg-white dark:hover:bg-slate-800">
               <div className="flex items-center gap-3">

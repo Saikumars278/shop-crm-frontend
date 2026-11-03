@@ -6,7 +6,6 @@ import {
   FiTrendingUp,
   FiAlertTriangle,
   FiDollarSign,
-  FiShoppingBag,
   FiCheckCircle,
   FiPackage,
   FiTag,
@@ -14,15 +13,11 @@ import {
   FiArrowRight,
   FiRefreshCw,
   FiCreditCard,
-  FiCalendar,
   FiBox,
   FiCheck,
   FiShield,
   FiZap,
   FiTarget,
-  FiAward,
-  FiArrowUpRight,
-  FiActivity,
 } from "react-icons/fi";
 import {
   ComposedChart,
@@ -33,7 +28,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
   Cell,
 } from "recharts";
 
@@ -167,7 +161,7 @@ export default function AiForecastDashboard() {
   const inStockFastItems = high_demand_products.filter((p: any) => p.current_stock > 0);
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto w-full min-w-0">
       {/* ─── 1. CLEAN TOP HEADER ─── */}
       <header className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -401,7 +395,7 @@ export default function AiForecastDashboard() {
                 </div>
 
                 {/* Composed Chart */}
-                <div className="h-72 sm:h-80 w-full pt-1">
+                <div className="h-72 sm:h-80 w-full min-w-0 pt-1">
                   <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart
                       data={trend_data}
@@ -669,7 +663,7 @@ export default function AiForecastDashboard() {
             </div>
 
             {/* Large Chart with Correct Size Bars */}
-            <div className="h-80 w-full pt-2">
+            <div className="h-80 w-full min-w-0 pt-2">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={trend_data} margin={{ top: 10, right: 15, left: -10, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" strokeOpacity={0.6} />
@@ -728,7 +722,7 @@ export default function AiForecastDashboard() {
             </div>
 
             {/* Month-by-Month Breakdown Table */}
-            <div className="overflow-x-auto pt-4">
+            <div className="crm-table-container pt-4">
               <table className="w-full text-xs text-left">
                 <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 font-bold uppercase text-[11px]">
                   <tr>

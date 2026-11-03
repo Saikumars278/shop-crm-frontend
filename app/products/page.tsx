@@ -5,7 +5,6 @@ import Header from "@/app/components/Header";
 
 import ProductHeader from "./ProductHeader";
 import ProductStats from "./ProductStats";
-// import ProductFilters from "./ProductFilters";
 import ProductTable from "./ProductTable";
 
 export default function ProductsPage() {
@@ -19,7 +18,6 @@ export default function ProductsPage() {
         <section className="mt-8 space-y-6">
           <ProductHeader />
           <ProductStats />
-          {/* <ProductFilters /> */}
           <ProductTable />
         </section>
       </main>

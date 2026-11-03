@@ -5,27 +5,17 @@ import {
   FiSettings,
   FiUser,
   FiFileText,
-  FiShield,
-  FiMonitor,
   FiSave,
   FiRefreshCcw,
   FiCamera,
-  FiDownload,
-  FiUpload,
-  FiBell,
   FiCheckCircle,
   FiAlertCircle,
-  FiLock,
-  FiPercent,
-  FiGlobe,
   FiEdit2
 } from "react-icons/fi";
 
 const TABS = [
   { id: "general", label: "General Information", icon: FiUser },
   { id: "billing", label: "Billing & Tax Settings", icon: FiFileText },
-  { id: "security", label: "Security & Backup", icon: FiShield },
-  { id: "preferences", label: "Preferences & Alerts", icon: FiMonitor },
 ];
 
 export default function SettingsPage() {
@@ -119,7 +109,7 @@ export default function SettingsPage() {
         </div>
       )}
 
-      <div className="mx-auto max-w-7xl space-y-6">
+      <div className="mx-auto max-w-7xl space-y-6 w-full min-w-0">
         
         {/* Page Header Bar */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900 p-5 shadow-sm">
@@ -133,44 +123,44 @@ export default function SettingsPage() {
             </div>
           </div>
           
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
             <button 
               onClick={() => {
                 const nextState = !isEditing;
                 setIsEditing(nextState);
                 triggerToast(nextState ? "Editing unlocked! Modify any detail now." : "Editing locked.", "success");
               }}
-              className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold shadow-md transition active:scale-95 ${
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 rounded-xl px-3.5 py-2.5 text-xs font-bold shadow-md transition active:scale-95 ${
                 isEditing 
                   ? "bg-amber-500 text-white shadow-amber-500/20 hover:bg-amber-600" 
                   : "bg-blue-600 text-white shadow-blue-500/20 hover:bg-blue-700"
               }`}>
               <FiEdit2 size={14} />
-              <span>{isEditing ? "Lock / Finish Edit" : "Click to Edit Details"}</span>
+              <span>{isEditing ? "Lock Edit" : "Edit Details"}</span>
             </button>
 
             <button 
               onClick={() => window.location.reload()}
-              className="flex items-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 shadow-sm transition hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95">
+              className="flex items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 px-3.5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 shadow-sm transition hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95">
               <FiRefreshCcw size={14} />
               <span>Reset</span>
             </button>
             <button 
               onClick={handleSave}
               disabled={loading || saving}
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-500/25 transition-all hover:from-emerald-700 hover:to-emerald-600 active:scale-95 disabled:opacity-60">
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 px-4 sm:px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-500/25 transition-all hover:from-emerald-700 hover:to-emerald-600 active:scale-95 disabled:opacity-60">
               <FiSave size={14} />
-              <span>{saving ? "Saving Changes..." : "Save Settings"}</span>
+              <span>{saving ? "Saving..." : "Save Settings"}</span>
             </button>
           </div>
         </div>
 
         {/* Main Content Layout */}
-        <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex flex-col lg:flex-row gap-6 w-full min-w-0">
           
-          {/* Vertical Tabs Sidebar */}
-          <div className="w-full lg:w-72 shrink-0 space-y-1.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900 p-3 shadow-sm h-fit">
-            <p className="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          {/* Responsive Tabs Sidebar */}
+          <div className="w-full lg:w-72 shrink-0 flex flex-row overflow-x-auto lg:flex-col gap-1.5 lg:space-y-1.5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900 p-2 sm:p-3 shadow-sm h-fit scrollbar-none">
+            <p className="hidden lg:block px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               Categories
             </p>
             {TABS.map((tab) => {
@@ -180,13 +170,13 @@ export default function SettingsPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex w-full items-center gap-3.5 rounded-xl px-4 py-3 text-xs font-bold transition-all duration-200 ${
+                  className={`flex shrink-0 lg:w-full items-center gap-2 sm:gap-3.5 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-xs font-bold transition-all duration-200 whitespace-nowrap ${
                     isActive
                       ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md shadow-blue-500/25"
                       : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
-                  <Icon size={18} className={isActive ? "text-white" : "text-slate-400 dark:text-slate-500"} />
+                  <Icon size={17} className={isActive ? "text-white" : "text-slate-400 dark:text-slate-500"} />
                   <span>{tab.label}</span>
                 </button>
               );
@@ -194,7 +184,7 @@ export default function SettingsPage() {
           </div>
 
           {/* Tab Panels Area */}
-          <div className="flex-1 space-y-6">
+          <div className="flex-1 space-y-6 min-w-0">
             
             {/* ---------------- GENERAL TAB ---------------- */}
             {activeTab === "general" && (
@@ -434,181 +424,6 @@ export default function SettingsPage() {
                         className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/90 px-4 py-3 text-xs font-semibold text-slate-900 dark:text-slate-100 outline-none transition focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-blue-500/20 resize-none disabled:opacity-70 disabled:bg-slate-100/60 dark:disabled:bg-slate-800/40 disabled:cursor-not-allowed" 
                       />
                     </div>
-                  </div>
-                </div>
-
-              </div>
-            )}
-
-            {/* ---------------- SECURITY & BACKUP TAB ---------------- */}
-            {activeTab === "security" && (
-              <div className="space-y-6">
-                
-                {/* Security Card */}
-                <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
-                  <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 px-6 py-4 bg-slate-50/50 dark:bg-slate-900/50">
-                    <div>
-                      <h2 className="text-sm font-bold text-slate-900 dark:text-white">Security &amp; Password</h2>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Ensure your administrator account password is kept safe.</p>
-                    </div>
-                    <button 
-                      onClick={() => {
-                        setIsEditing(true);
-                        triggerToast("Editing unlocked! You can modify passwords & backup settings now.", "success");
-                      }}
-                      className="flex items-center gap-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/60 px-3 py-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 transition hover:bg-blue-100">
-                      <FiEdit2 size={13} />
-                      Edit Security
-                    </button>
-                  </div>
-                  <div className="p-6 space-y-5">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Current Password</label>
-                      <div className="relative max-w-md">
-                        <FiLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                        <input 
-                          type="password" 
-                          disabled={!isEditing}
-                          placeholder="••••••••" 
-                          className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/90 pl-10 pr-4 py-3 text-xs font-semibold text-slate-900 dark:text-slate-100 outline-none transition focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-blue-500/20 disabled:opacity-70 disabled:bg-slate-100/60 dark:disabled:bg-slate-800/40 disabled:cursor-not-allowed" 
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
-                      <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">New Password</label>
-                        <input 
-                          type="password" 
-                          disabled={!isEditing}
-                          placeholder="••••••••" 
-                          className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/90 px-4 py-3 text-xs font-semibold text-slate-900 dark:text-slate-100 outline-none transition focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-blue-500/20 disabled:opacity-70 disabled:bg-slate-100/60 dark:disabled:bg-slate-800/40 disabled:cursor-not-allowed" 
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Confirm New Password</label>
-                        <input 
-                          type="password" 
-                          disabled={!isEditing}
-                          placeholder="••••••••" 
-                          className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/90 px-4 py-3 text-xs font-semibold text-slate-900 dark:text-slate-100 outline-none transition focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-blue-500/20 disabled:opacity-70 disabled:bg-slate-100/60 dark:disabled:bg-slate-800/40 disabled:cursor-not-allowed" 
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Data Backup & Export */}
-                <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
-                  <div className="border-b border-slate-100 dark:border-slate-800/80 px-6 py-4 bg-slate-50/50 dark:bg-slate-900/50">
-                    <h2 className="text-sm font-bold text-slate-900 dark:text-white">Database Backup &amp; Recovery</h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Export full JSON backups or restore previous product and order data.</p>
-                  </div>
-                  <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
-                    
-                    <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40 p-5 flex flex-col items-start justify-between gap-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
-                          <FiDownload size={20} />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-slate-900 dark:text-white text-xs">Full System Backup</h3>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Export products, bills, customer data in JSON format.</p>
-                        </div>
-                      </div>
-                      <button 
-                        disabled={!isEditing}
-                        onClick={() => triggerToast("Backup file downloaded successfully!")}
-                        className="rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-blue-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
-                        Download JSON Backup
-                      </button>
-                    </div>
-
-                    <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40 p-5 flex flex-col items-start justify-between gap-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
-                          <FiUpload size={20} />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-slate-900 dark:text-white text-xs">Restore From Backup</h3>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Upload a .json backup file to restore database entries.</p>
-                        </div>
-                      </div>
-                      <button 
-                        disabled={!isEditing}
-                        onClick={() => triggerToast("Select a JSON backup file to import.", "error")}
-                        className="rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 shadow-sm transition hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
-                        Choose Backup File...
-                      </button>
-                    </div>
-
-                  </div>
-                </div>
-
-              </div>
-            )}
-
-            {/* ---------------- PREFERENCES TAB ---------------- */}
-            {activeTab === "preferences" && (
-              <div className="space-y-6">
-                
-                <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
-                  <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 px-6 py-4 bg-slate-50/50 dark:bg-slate-900/50">
-                    <div>
-                      <h2 className="text-sm font-bold text-slate-900 dark:text-white">Alerts &amp; System Notifications</h2>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Control which notifications get triggered automatically.</p>
-                    </div>
-                    <button 
-                      onClick={() => {
-                        setIsEditing(true);
-                        triggerToast("Editing unlocked! You can toggle notification alerts now.", "success");
-                      }}
-                      className="flex items-center gap-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/60 px-3 py-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 transition hover:bg-blue-100">
-                      <FiEdit2 size={13} />
-                      Edit Preferences
-                    </button>
-                  </div>
-                  <div className="p-6 space-y-4">
-                    
-                    <label className="flex items-center justify-between cursor-pointer rounded-2xl border border-slate-100 dark:border-slate-800/80 p-4 transition hover:bg-slate-50/80 dark:hover:bg-slate-800/50">
-                      <div className="flex items-center gap-3.5">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
-                          <FiBell size={18} />
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-slate-900 dark:text-white">Low Stock Threshold Warnings</p>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400">Get real-time banner alerts when inventory count drops below 10 units.</p>
-                        </div>
-                      </div>
-                      <input type="checkbox" disabled={!isEditing} defaultChecked className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" />
-                    </label>
-
-                    <label className="flex items-center justify-between cursor-pointer rounded-2xl border border-slate-100 dark:border-slate-800/80 p-4 transition hover:bg-slate-50/80 dark:hover:bg-slate-800/50">
-                      <div className="flex items-center gap-3.5">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400">
-                          <FiAlertCircle size={18} />
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-slate-900 dark:text-white">Product Expiry Reminders</p>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400">Alert 30 days before grocery/dairy products reach expiration date.</p>
-                        </div>
-                      </div>
-                      <input type="checkbox" disabled={!isEditing} defaultChecked className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" />
-                    </label>
-
-                    <label className="flex items-center justify-between cursor-pointer rounded-2xl border border-slate-100 dark:border-slate-800/80 p-4 transition hover:bg-slate-50/80 dark:hover:bg-slate-800/50">
-                      <div className="flex items-center gap-3.5">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
-                          <FiGlobe size={18} />
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-slate-900 dark:text-white">Daily Sales Summary Reports</p>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400">Send an automated daily revenue summary email to store manager.</p>
-                        </div>
-                      </div>
-                      <input type="checkbox" disabled={!isEditing} className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" />
-                    </label>
-
                   </div>
                 </div>
 

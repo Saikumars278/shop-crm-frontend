@@ -5,12 +5,10 @@ import Link from "next/link";
 import {
   FiPackage,
   FiTrendingUp,
-  FiTrendingDown,
   FiAlertTriangle,
   FiCheckCircle,
   FiXCircle,
   FiRefreshCw,
-  FiArrowRight,
   FiCpu,
   FiExternalLink,
 } from "react-icons/fi";

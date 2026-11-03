@@ -423,74 +423,76 @@ await fetchProducts(query);
           </div>
         )}
 
-        {/* Stat cards */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          <div className="flex items-center gap-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-sm">
-            <div className="rounded-xl bg-blue-100 p-2.5">
-              <FiPackage className="text-lg text-blue-600" />
+        {/* Stat cards - Responsive 2-column mobile grid, 5-col desktop */}
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-5 w-full min-w-0">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-xs transition-all hover:shadow-md">
+            <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
+              <FiPackage size={18} />
             </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <div className="min-w-0">
+              <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
                 Total Products
               </p>
-              <p className="text-xl font-bold text-slate-800 dark:text-white">
+              <p className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-0.5 tracking-tight truncate">
                 {stats.total}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-sm">
-            <div className="rounded-xl bg-yellow-100 p-2.5">
-              <FiAlertTriangle className="text-lg text-yellow-600" />
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-xs transition-all hover:shadow-md">
+            <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-yellow-100 dark:bg-yellow-950/60 text-yellow-600 dark:text-yellow-400">
+              <FiAlertTriangle size={18} />
             </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Low Stock</p>
-              <p className="text-xl font-bold text-slate-800 dark:text-white">
+            <div className="min-w-0">
+              <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
+                Low Stock
+              </p>
+              <p className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-0.5 tracking-tight truncate">
                 {stats.lowStock}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-sm">
-            <div className="rounded-xl bg-red-100 p-2.5">
-              <FiXCircle className="text-lg text-red-600" />
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-xs transition-all hover:shadow-md">
+            <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400">
+              <FiXCircle size={18} />
             </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <div className="min-w-0">
+              <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
                 Out of Stock
               </p>
-              <p className="text-xl font-bold text-slate-800 dark:text-white">
+              <p className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-0.5 tracking-tight truncate">
                 {stats.outOfStock}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-sm">
-            <div className="rounded-xl bg-green-100 p-2.5">
-              <FiBox className="text-lg text-green-600" />
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-xs transition-all hover:shadow-md">
+            <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-green-100 dark:bg-green-950/60 text-green-600 dark:text-green-400">
+              <FiBox size={18} />
             </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <div className="min-w-0">
+              <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
                 Inventory Value
               </p>
-              <p className="text-xl font-bold text-slate-800 dark:text-white">
+              <p className="text-base sm:text-xl font-extrabold text-slate-900 dark:text-white mt-0.5 tracking-tight truncate">
                 ₹{stats.inventoryValue.toLocaleString("en-IN")}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-sm">
-            <div className="rounded-xl bg-orange-100 p-2.5">
-              <FiAlertTriangle className="text-lg text-orange-600" />
+          <div className="col-span-2 sm:col-span-2 lg:col-span-1 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-xs transition-all hover:shadow-md">
+            <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400">
+              <FiAlertTriangle size={18} />
             </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <div className="min-w-0">
+              <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
                 Expiry Alerts
               </p>
-              <div className="mt-0.5 flex items-baseline gap-1.5">
-                <span className="text-lg font-bold text-red-600 leading-none">{stats.expired}</span>
+              <div className="mt-0.5 flex items-baseline gap-1.5 flex-wrap">
+                <span className="text-base sm:text-lg font-bold text-red-600 leading-none">{stats.expired}</span>
                 <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400">Expired</span>
-                <span className="ml-1 text-lg font-bold text-orange-500 leading-none">{stats.expiringSoon}</span>
+                <span className="ml-1 text-base sm:text-lg font-bold text-orange-500 leading-none">{stats.expiringSoon}</span>
                 <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400">Soon</span>
               </div>
             </div>
@@ -534,7 +536,7 @@ await fetchProducts(query);
             </div>
           ) : filteredProducts.length > 0 ? (
             <>
-              <div className="overflow-x-auto">
+              <div className="crm-table-container">
                 <table className="min-w-full border-collapse">
                   <thead>
                     <tr className="bg-slate-50 dark:bg-slate-800/70 border-b border-slate-100 dark:border-slate-800">

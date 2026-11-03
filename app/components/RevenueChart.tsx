@@ -93,7 +93,7 @@ export default function RevenueChart() {
       : data.chart;
 
   return (
-    <div className="flex flex-col h-full overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
+    <div className="flex flex-col h-full w-full min-w-0 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
 
       {/* ── Header ── */}
       <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-5 py-4">
@@ -119,32 +119,31 @@ export default function RevenueChart() {
       </div>
 
       {/* ── KPI Row ── */}
-      <div className="grid grid-cols-3 divide-x divide-slate-100 dark:divide-slate-800 border-b border-slate-100 dark:border-slate-800">
-        <div className="flex flex-col px-5 py-4">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Total Revenue</p>
-          <p className="mt-1.5 text-xl font-black tracking-tight text-slate-900 dark:text-white leading-none">
+      <div className="grid grid-cols-3 divide-x divide-slate-100 dark:divide-slate-800 border-b border-slate-100 dark:border-slate-800 min-w-0">
+        <div className="flex flex-col px-3 sm:px-5 py-3 sm:py-4 min-w-0">
+          <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-400 truncate">Total Revenue</p>
+          <p className="mt-1 text-base sm:text-xl font-black tracking-tight text-slate-900 dark:text-white leading-none truncate">
             ₹{Number(data.total_revenue).toLocaleString("en-IN")}
           </p>
-          <p className={`mt-1.5 text-[11px] font-semibold ${difference >= 0 ? "text-emerald-600" : "text-red-500"}`}>
+          <p className={`mt-1 text-[10px] sm:text-[11px] font-semibold truncate ${difference >= 0 ? "text-emerald-600" : "text-red-500"}`}>
             {difference >= 0 ? "▲" : "▼"} ₹{Math.abs(difference).toLocaleString("en-IN")} vs last month
           </p>
         </div>
-        <div className="flex flex-col px-5 py-4">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Last Month</p>
-          <p className="mt-1.5 text-lg font-bold text-slate-700 dark:text-slate-200 leading-none">
+        <div className="flex flex-col px-3 sm:px-5 py-3 sm:py-4 min-w-0">
+          <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-400 truncate">Last Month</p>
+          <p className="mt-1 text-sm sm:text-lg font-bold text-slate-700 dark:text-slate-200 leading-none truncate">
             ₹{Number(data.previous_month).toLocaleString("en-IN")}
           </p>
         </div>
-        <div className="flex flex-col px-5 py-4">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">This Month</p>
-          <p className="mt-1.5 text-lg font-bold text-blue-600 leading-none">
+        <div className="flex flex-col px-3 sm:px-5 py-3 sm:py-4 min-w-0">
+          <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-400 truncate">This Month</p>
+          <p className="mt-1 text-sm sm:text-lg font-bold text-blue-600 leading-none truncate">
             ₹{Number(data.current_month).toLocaleString("en-IN")}
           </p>
         </div>
       </div>
-
-      {/* ── Chart ── */}
-      <div className="flex-1 px-4 pb-4 pt-3">
+{/* ── Chart ── */}
+      <div className="flex-1 w-full min-w-0 px-3 sm:px-4 pb-4 pt-3">
         {hasRevenueData ? (
           <ResponsiveContainer width="100%" height={240}>
             <AreaChart data={displayChartData} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>

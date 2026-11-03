@@ -3,10 +3,10 @@ import BillingPage from "./Billingpage";
 
 export default function Page() {
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors">
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors overflow-x-hidden">
       <Sidebar />
 
-      <main className="ml-72">
+      <main className="crm-main-fluid">
         <BillingPage />
       </main>
     </div>

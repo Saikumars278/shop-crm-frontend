@@ -6,7 +6,6 @@ import {
   FiDownload,
   FiSearch,
   FiEye,
-  FiPrinter,
   FiChevronLeft,
   FiChevronRight,
   FiTrendingUp,
@@ -27,7 +26,6 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
-  Legend,
 } from "recharts";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
@@ -51,7 +49,6 @@ export default function SalesPage() {
   const [paymentData, setPaymentData] = useState<any[]>([]);
   const [topProducts, setTopProducts] = useState<any[]>([]);
   const [salesList, setSalesList] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch(`${API_BASE}/sales/page-data/`)
@@ -61,11 +58,9 @@ export default function SalesPage() {
         setPaymentData(data.payment_data || []);
         setTopProducts(data.top_products || []);
         setSalesList(data.sales_list || []);
-        setLoading(false);
       })
       .catch((err) => {
         console.error("Failed to load sales data:", err);
-        setLoading(false);
       });
   }, []);
 
@@ -113,8 +108,8 @@ export default function SalesPage() {
   const paginatedSales = filteredSales.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   return (
-    <div className="min-h-screen p-5 bg-gradient-to-br from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
-      <div className="mx-auto w-full space-y-4">
+    <div className="min-h-screen p-3 sm:p-5 lg:p-6 bg-gradient-to-br from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+      <div className="mx-auto w-full space-y-4 min-w-0">
         
         {/* Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -123,7 +118,7 @@ export default function SalesPage() {
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Track revenue, transactions, and performance metrics.</p>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-2 rounded-xl bg-white dark:bg-slate-900 px-3 py-2 shadow-sm border border-slate-200 dark:border-slate-700">
               <FiCalendar size={14} className="text-slate-400" />
               <select 
@@ -147,8 +142,8 @@ export default function SalesPage() {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="flex items-center gap-3 rounded-2xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3 xl:grid-cols-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
             <div className="rounded-xl bg-blue-50 p-2.5">
               <FiDollarSign className="text-lg text-blue-600" />
             </div>
@@ -159,7 +154,7 @@ export default function SalesPage() {
               )}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 rounded-2xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
             <div className="rounded-xl bg-indigo-50 p-2.5">
               <FiFileText className="text-lg text-indigo-600" />
             </div>
@@ -168,7 +163,7 @@ export default function SalesPage() {
               <p className="text-xl font-bold text-slate-800 dark:text-white">{salesList.length}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 rounded-2xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
             <div className="rounded-xl bg-green-50 p-2.5">
               <FiTrendingUp className="text-lg text-green-600" />
             </div>
@@ -177,7 +172,7 @@ export default function SalesPage() {
               <p className="text-xl font-bold text-slate-800 dark:text-white">{formatINR(845200)}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 rounded-2xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
             <div className="rounded-xl bg-orange-50 p-2.5">
               <FiPieChart className="text-lg text-orange-600" />
             </div>
@@ -192,7 +187,7 @@ export default function SalesPage() {
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div className="col-span-1 lg:col-span-2 rounded-2xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800">
             <h3 className="text-sm font-bold text-slate-800 dark:text-white mb-4">Revenue Trend</h3>
-            <div className="h-60 w-full">
+            <div className="h-60 w-full min-w-0">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <defs>
@@ -217,7 +212,7 @@ export default function SalesPage() {
           
           <div className="col-span-1 rounded-2xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800">
             <h3 className="text-sm font-bold text-slate-800 dark:text-white mb-4">Payment Methods</h3>
-            <div className="h-44 w-full">
+            <div className="h-44 w-full min-w-0">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={paymentData} layout="vertical" margin={{ top: 0, right: 30, left: 10, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(148, 163, 184, 0.15)" />
@@ -283,7 +278,7 @@ export default function SalesPage() {
               </div>
             </div>
 
-            <div className="flex-1 overflow-x-auto">
+            <div className="flex-1 crm-table-container">
               <table className="w-full min-w-[700px] text-left border-collapse">
                 <thead>
                   <tr className="bg-slate-50 dark:bg-slate-800/70 border-b border-slate-100 dark:border-slate-800 text-[10px] uppercase tracking-widest text-slate-400">
@@ -349,7 +344,7 @@ export default function SalesPage() {
                 <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
                   Page <span className="font-bold text-slate-800 dark:text-white">{currentPage}</span> of {totalPages}
                 </span>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <button 
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                     disabled={currentPage === 1}

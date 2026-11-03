@@ -5,11 +5,33 @@
 ========================= */
 
 .dashboard {
-  @apply min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-200;
+  @apply min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-200 overflow-x-hidden;
 }
 
 .main-content {
-  @apply ml-72 min-h-screen p-4 sm:p-6 transition-all duration-300;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    padding: 0.875rem;
+}
+
+@media (min-width: 640px) {
+    .main-content {
+        padding: 1.25rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .main-content {
+        margin-left: 18rem;
+        width: calc(100% - 18rem);
+        max-width: calc(100% - 18rem);
+        padding: 1.5rem;
+    }
 }
 
 /* =========================
@@ -45,23 +67,11 @@
 }
 
 /* =========================
-   Filters
-========================= */
-
-.filters-card {
-  @apply rounded-2xl border border-slate-200 bg-white p-4 shadow-sm;
-}
-
-.filters-grid {
-  @apply flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between;
-}
-
-/* =========================
    Table
 ========================= */
 
 .table-card {
-  @apply overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm;
+  @apply overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm;
 }
 
 /* =========================
@@ -69,57 +79,9 @@
 ========================= */
 
 .primary-btn {
-  @apply rounded-xl bg-blue-600 px-4 py-2 font-semibold text-white transition hover:bg-blue-700 text-sm;
+  @apply rounded-xl bg-blue-600 px-4 py-2 font-semibold text-white transition hover:bg-blue-700 text-sm active:scale-95;
 }
 
 .secondary-btn {
-  @apply rounded-xl border border-slate-200 bg-white px-4 py-2 font-semibold text-slate-700 transition hover:bg-slate-100 text-sm;
-}
-
-/* =========================
-   Responsive
-========================= */
-
-@media (max-width:1280px){
-
-.main-content{
-  @apply ml-72 p-6;
-}
-
-}
-
-@media (max-width:1024px){
-
-.main-content{
-  @apply ml-0 p-5;
-}
-
-}
-
-@media (max-width:768px){
-
-.main-content{
-  @apply p-4;
-}
-
-.page-header{
-  @apply gap-4;
-}
-
-.filters-grid{
-  @apply gap-4;
-}
-
-}
-
-@media (max-width:640px){
-
-.main-content{
-  @apply p-3;
-}
-
-.stats-grid{
-  @apply grid-cols-1;
-}
-
+  @apply rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 text-sm active:scale-95;
 }

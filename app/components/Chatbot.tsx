@@ -280,7 +280,7 @@ export default function Chatbot() {
 
       {/* ─── FLOATING CHAT WINDOW ─── */}
       {isOpen && (
-        <div className="fixed bottom-24 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-[420px] h-[600px] max-h-[82vh] flex flex-col rounded-3xl border border-slate-200/90 dark:border-slate-800/90 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl shadow-2xl shadow-blue-500/15 overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-200">
+        <div className="fixed bottom-24 left-4 right-4 sm:left-auto sm:right-6 sm:w-[420px] max-w-[calc(100%-2rem)] z-50 h-[600px] max-h-[82vh] flex flex-col rounded-3xl border border-slate-200/90 dark:border-slate-800/90 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl shadow-2xl shadow-blue-500/15 overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-200">
           {/* Header */}
           <div className="relative border-b border-slate-100 dark:border-slate-800/80 bg-gradient-to-r from-blue-600/10 via-indigo-600/10 to-transparent px-5 py-4 shrink-0">
             <div className="flex items-center justify-between">

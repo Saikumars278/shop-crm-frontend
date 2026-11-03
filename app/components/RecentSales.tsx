@@ -6,12 +6,9 @@ import {
   FiFileText,
   FiClock,
   FiCheckCircle,
-  FiCreditCard,
   FiArrowRight,
   FiCpu,
   FiShoppingBag,
-  FiExternalLink,
-  FiZap,
 } from "react-icons/fi";
 
 interface SaleLineItem {
@@ -44,7 +41,6 @@ interface ApiResponse {
 
 export default function RecentSales() {
   const [sales, setSales] = useState<Sale[]>([]);
-  const [summary, setSummary] = useState<ApiResponse["summary"] | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,7 +48,6 @@ export default function RecentSales() {
       .then((res) => res.json())
       .then((data: ApiResponse) => {
         setSales(data.sales || []);
-        setSummary(data.summary || null);
         setLoading(false);
       })
       .catch((err) => {
