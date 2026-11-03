@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -37,7 +38,7 @@ export default function QuickActionsModal({ isOpen, onClose }: QuickActionsModal
 
   useEffect(() => {
     if (isOpen) {
-      fetch("http://127.0.0.1:8000/api/stock-overview/")
+      fetch(`${API_BASE}/stock-overview/`)
         .then((r) => r.json())
         .then((data) => {
           if (typeof data?.low_stock === "number") {

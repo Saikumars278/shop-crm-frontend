@@ -29,8 +29,8 @@ const CATEGORIES = [
 const UNITS = ["pcs", "kg", "g", "L", "mL", "pack", "dozen", "box", "bottle", "pouch"];
 
 // Set this to your Django backend base URL
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
+import { API_BASE } from "@/app/lib/api";
+const API_BASE_URL = API_BASE.replace(/\/api\/?$/, "");
 
 function getStatus(stock: number): Product["status"] {
   if (stock <= 0) return "Out of Stock";

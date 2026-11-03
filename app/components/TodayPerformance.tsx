@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import {
@@ -35,7 +36,7 @@ export default function TodayPerformance() {
     let mounted = true;
 
     const load = () => {
-      fetch("http://127.0.0.1:8000/api/dashboard/today-performance/")
+      fetch(`${API_BASE}/dashboard/today-performance/`)
         .then((r) => r.json())
         .then((d) => {
           if (mounted) {

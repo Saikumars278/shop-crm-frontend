@@ -50,7 +50,7 @@ const INITIAL_BOT_MESSAGE: Message = {
   ],
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+import { API_BASE } from "@/app/lib/api";
 
 export default function Chatbot() {
   const pathname = usePathname();
@@ -142,7 +142,7 @@ export default function Chatbot() {
       const botError: Message = {
         id: "bot-err-" + Date.now(),
         sender: "bot",
-        text: `⚠️ **Unable to connect to assistant backend.**\n\n*Error: ${errorMessage}*\nPlease ensure the Django backend server is running on \`http://127.0.0.1:8000\`.`,
+        text: `⚠️ **Unable to connect to assistant backend.**\n\n*Error: ${errorMessage}*\nPlease ensure the Django backend server is running at \`${API_BASE}\`.`,
         time: new Date().toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",

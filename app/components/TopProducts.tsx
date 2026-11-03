@@ -11,7 +11,9 @@ interface Product {
   bar_pct: number;
 }
 
-const API = "http://127.0.0.1:8000/api/dashboard/top-products/";
+import { API_BASE } from "@/app/lib/api";
+
+const API = `${API_BASE}/dashboard/top-products/`;
 
 const RANK_CONFIG: Record<
   number,

@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -52,7 +53,7 @@ export default function StockOverview() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/stock-overview/")
+    fetch(`${API_BASE}/stock-overview/`)
       .then((res) => res.json())
       .then((res) => {
         setData(res);

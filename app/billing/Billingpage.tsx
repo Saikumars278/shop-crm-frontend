@@ -30,7 +30,7 @@ import { useTheme } from "next-themes";
 /*  API endpoints — see views.py / urls.py                             */
 /* ------------------------------------------------------------------ */
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+import { API_BASE } from "@/app/lib/api";
 const PRODUCTS_URL = `${API_BASE}/billing/products/`;
 const SALES_URL = `${API_BASE}/billing/sales/`;
 

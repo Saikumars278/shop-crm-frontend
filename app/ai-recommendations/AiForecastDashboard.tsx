@@ -31,7 +31,7 @@ import {
   Cell,
 } from "recharts";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+import { API_BASE } from "@/app/lib/api";
 
 function formatINR(val: number | undefined | null) {
   if (val === undefined || val === null || isNaN(val)) return "₹0";

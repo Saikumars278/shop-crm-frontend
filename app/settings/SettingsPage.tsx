@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE } from "@/app/lib/api";
 
 import React, { useState } from "react";
 import {
@@ -50,7 +51,7 @@ export default function SettingsPage() {
         if (local) {
           try { setSettings(JSON.parse(local)); } catch (e) {}
         }
-        const res = await fetch("http://127.0.0.1:8000/api/settings/");
+        const res = await fetch(`${API_BASE}/settings/`);
         if (res.ok) {
           const data = await res.json();
           setSettings(data);
@@ -75,7 +76,7 @@ export default function SettingsPage() {
     localStorage.setItem("shop_settings", JSON.stringify(settings));
     window.dispatchEvent(new Event("settingsUpdated"));
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/settings/", {
+      const res = await fetch(`${API_BASE}/settings/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(settings),

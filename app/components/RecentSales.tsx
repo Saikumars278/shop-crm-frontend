@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -44,7 +45,7 @@ export default function RecentSales() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/dashboard/recent-sales/?sort=date_desc&page=1")
+    fetch(`${API_BASE}/dashboard/recent-sales/?sort=date_desc&page=1`)
       .then((res) => res.json())
       .then((data: ApiResponse) => {
         setSales(data.sales || []);

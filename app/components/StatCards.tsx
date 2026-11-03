@@ -12,7 +12,9 @@ import {
   FiAlertCircle,
 } from "react-icons/fi";
 
-const API = "http://127.0.0.1:8000/api/dashboard/";
+import { API_BASE } from "@/app/lib/api";
+
+const API = `${API_BASE}/dashboard/`;
 
 interface DashboardData {
   total_products: number;

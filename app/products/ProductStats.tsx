@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -109,7 +110,7 @@ export default function ProductStats() {
 
   const loadStats = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/products/stats/");
+      const res = await fetch(`${API_BASE}/products/stats/`);
       if (!res.ok) throw new Error("Failed to load stats");
       const data = await res.json();
       setStats(data.stats);

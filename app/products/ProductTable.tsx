@@ -24,8 +24,7 @@ import DeleteProductModal from "./modals/DeleteModal";
 // ---------------------------------------------------------------------------
 // Point this at your Django server. Adjust the base URL as needed
 // (e.g. via NEXT_PUBLIC_API_URL in your .env.local file).
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+import { API_BASE } from "@/app/lib/api";
 
 // How many rows to show per page.
 const PAGE_SIZE = 10;

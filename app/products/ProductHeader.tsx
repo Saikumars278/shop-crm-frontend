@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import {
@@ -33,7 +34,7 @@ export default function ProductHeader({
   const loadHeader = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/products/header/"
+        `${API_BASE}/products/header/`
       );
 
       if (!response.ok) {
@@ -62,7 +63,7 @@ export default function ProductHeader({
 
   const handleExport = () => {
     window.open(
-      "http://127.0.0.1:8000/api/products/export/",
+      `${API_BASE}/products/export/`,
       "_blank"
     );
   };

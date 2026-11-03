@@ -12,7 +12,9 @@ import {
 } from "recharts";
 import { FiTrendingUp, FiTrendingDown, FiDollarSign } from "react-icons/fi";
 
-const API = "http://127.0.0.1:8000/api/revenue-chart/";
+import { API_BASE } from "@/app/lib/api";
+
+const API = `${API_BASE}/revenue-chart/`;
 
 interface RevenueChartData {
   month: string;

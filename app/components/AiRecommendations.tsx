@@ -23,7 +23,9 @@ interface Recommendation {
   impact?: string;
 }
 
-const API_URL = "http://127.0.0.1:8000/api/dashboard/ai-recommendations/";
+import { API_BASE } from "@/app/lib/api";
+
+const API_URL = `${API_BASE}/dashboard/ai-recommendations/`;
 
 const TYPE_STYLES = {
   Restock: {
