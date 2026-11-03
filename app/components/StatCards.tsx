@@ -77,23 +77,21 @@ function HealthBadge({ healthy }: { healthy: boolean }) {
 
 function SkeletonCard() {
   return (
-    <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-      <div className="animate-pulse">
-        <div className="flex items-center justify-between gap-1.5 min-w-0">
-          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-            <div className="h-11 w-11 rounded-xl bg-slate-200 dark:bg-slate-700" />
-            <div className="h-3 w-20 rounded bg-slate-200 dark:bg-slate-700" />
-          </div>
-          <div className="h-5 w-14 rounded-full bg-slate-200 dark:bg-slate-700" />
+    <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
+      <div className="flex items-center justify-between gap-1.5 min-w-0">
+        <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+          <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl youtube-shimmer" />
+          <div className="h-3 w-20 rounded youtube-shimmer" />
         </div>
+        <div className="h-5 w-14 rounded-full youtube-shimmer" />
+      </div>
 
-        <div className="mt-4 h-7 w-2/3 rounded bg-slate-200 dark:bg-slate-700" />
-        <div className="mt-2 h-3 w-1/3 rounded bg-slate-200 dark:bg-slate-700" />
+      <div className="mt-4 h-7 w-2/3 rounded youtube-shimmer" />
+      <div className="mt-2 h-3 w-1/3 rounded youtube-shimmer" />
 
-        <div className="mt-5 flex items-center justify-between">
-          <div className="h-5 w-20 rounded-full bg-slate-200 dark:bg-slate-700" />
-          <div className="h-3 w-24 rounded bg-slate-200 dark:bg-slate-700" />
-        </div>
+      <div className="mt-5 flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+        <div className="h-5 w-20 rounded-full youtube-shimmer" />
+        <div className="h-3 w-24 rounded youtube-shimmer" />
       </div>
     </div>
   );

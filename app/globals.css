@@ -155,3 +155,39 @@ html, body {
 .animate-pulse-glow {
   animation: pulseGlow 5s ease-in-out infinite;
 }
+
+/* YouTube-style Shimmer Skeleton Animation */
+@keyframes youtubeShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.youtube-shimmer {
+  background: linear-gradient(
+    90deg,
+    #f1f5f9 0%,
+    #e2e8f0 25%,
+    #cbd5e1 50%,
+    #e2e8f0 75%,
+    #f1f5f9 100%
+  );
+  background-size: 200% 100%;
+  animation: youtubeShimmer 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.dark .youtube-shimmer {
+  background: linear-gradient(
+    90deg,
+    #1e293b 0%,
+    #334155 25%,
+    #475569 50%,
+    #334155 75%,
+    #1e293b 100%
+  );
+  background-size: 200% 100%;
+  animation: youtubeShimmer 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}

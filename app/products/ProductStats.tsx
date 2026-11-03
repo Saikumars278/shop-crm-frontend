@@ -138,7 +138,7 @@ export default function ProductStats() {
         {[1, 2, 3, 4].map((item) => (
           <div
             key={item}
-            className="h-36 sm:h-44 animate-pulse rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+            className="h-36 sm:h-44 rounded-2xl youtube-shimmer border border-slate-200 dark:border-slate-800"
           />
         ))}
       </section>

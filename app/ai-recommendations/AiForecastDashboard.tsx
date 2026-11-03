@@ -132,16 +132,16 @@ export default function AiForecastDashboard() {
   if (loading && !data) {
     return (
       <div className="p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
-        <div className="animate-pulse h-24 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6" />
+        <div className="h-24 rounded-2xl youtube-shimmer border border-slate-200 dark:border-slate-800 p-6" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="animate-pulse h-36 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800"
+              className="h-36 rounded-2xl youtube-shimmer border border-slate-200 dark:border-slate-800"
             />
           ))}
         </div>
-        <div className="animate-pulse h-96 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800" />
+        <div className="h-96 rounded-2xl youtube-shimmer border border-slate-200 dark:border-slate-800" />
       </div>
     );
   }
