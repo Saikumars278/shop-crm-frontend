@@ -7,3 +7,4 @@ export const API_BASE = (
 ).replace(/\/+$/, "");
 
 export default API_BASE;
+
