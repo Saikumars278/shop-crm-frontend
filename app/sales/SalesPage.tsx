@@ -14,7 +14,8 @@ import {
   FiPieChart,
   FiCreditCard,
   FiSmartphone,
-  FiBriefcase
+  FiBriefcase,
+  FiShoppingBag,
 } from "react-icons/fi";
 import {
   AreaChart,
@@ -44,6 +45,7 @@ export default function SalesPage() {
   const [dateFilter, setDateFilter] = useState("Last 7 Days");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedSale, setSelectedSale] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   const [revenueData, setRevenueData] = useState<any[]>([]);
   const [paymentData, setPaymentData] = useState<any[]>([]);
@@ -51,6 +53,7 @@ export default function SalesPage() {
   const [salesList, setSalesList] = useState<any[]>([]);
 
   useEffect(() => {
+    setLoading(true);
     fetch(`${API_BASE}/sales/page-data/`)
       .then((res) => res.json())
       .then((data) => {
@@ -61,6 +64,9 @@ export default function SalesPage() {
       })
       .catch((err) => {
         console.error("Failed to load sales data:", err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -83,7 +89,7 @@ export default function SalesPage() {
       const from = new Date(today.getFullYear(), today.getMonth(), 1);
       return { from: fmt(from), to: fmt(today) };
     }
-    return null; // "Custom Range..." — no filter
+    return null;
   }
 
   // Filter Sales by date range + search query
@@ -106,6 +112,12 @@ export default function SalesPage() {
 
   const totalPages = Math.max(1, Math.ceil(filteredSales.length / PAGE_SIZE));
   const paginatedSales = filteredSales.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+  const totalRevenue = salesList.reduce((sum, s) => sum + (s.total || 0), 0);
+  const estimatedProfit = totalRevenue * 0.15;
+  const todaySales = salesList
+    .filter((s) => s.date === new Date().toISOString().split("T")[0])
+    .reduce((sum, s) => sum + (s.total || 0), 0);
 
   return (
     <div className="min-h-screen p-3 sm:p-5 lg:p-6 bg-gradient-to-br from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
@@ -143,44 +155,62 @@ export default function SalesPage() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3 xl:grid-cols-4">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
-            <div className="rounded-xl bg-blue-50 p-2.5">
-              <FiDollarSign className="text-lg text-blue-600" />
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Today's Sales</p>
-              <p className="text-xl font-bold text-slate-800 dark:text-white">{formatINR(
-                salesList.filter(s => s.date === new Date().toISOString().split('T')[0]).reduce((sum, s) => sum + s.total, 0) || 0
-              )}</p>
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
-            <div className="rounded-xl bg-indigo-50 p-2.5">
-              <FiFileText className="text-lg text-indigo-600" />
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Bills</p>
-              <p className="text-xl font-bold text-slate-800 dark:text-white">{salesList.length}</p>
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
-            <div className="rounded-xl bg-green-50 p-2.5">
-              <FiTrendingUp className="text-lg text-green-600" />
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Monthly Revenue</p>
-              <p className="text-xl font-bold text-slate-800 dark:text-white">{formatINR(845200)}</p>
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
-            <div className="rounded-xl bg-orange-50 p-2.5">
-              <FiPieChart className="text-lg text-orange-600" />
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Estimated Profit (15%)</p>
-              <p className="text-xl font-bold text-slate-800 dark:text-white">{formatINR(126780)}</p>
-            </div>
-          </div>
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800"
+              >
+                <div className="h-10 w-10 rounded-xl youtube-shimmer shrink-0" />
+                <div className="space-y-1.5 flex-1 min-w-0">
+                  <div className="h-3 w-20 rounded-md youtube-shimmer" />
+                  <div className="h-6 w-28 rounded-md youtube-shimmer" />
+                </div>
+              </div>
+            ))
+          ) : (
+            <>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
+                <div className="rounded-xl bg-blue-50 dark:bg-blue-950/60 p-2.5 text-blue-600 dark:text-blue-400">
+                  <FiDollarSign className="text-lg" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Today's Sales</p>
+                  <p className="text-xl font-bold text-slate-800 dark:text-white">{formatINR(todaySales)}</p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
+                <div className="rounded-xl bg-indigo-50 dark:bg-indigo-950/60 p-2.5 text-indigo-600 dark:text-indigo-400">
+                  <FiFileText className="text-lg" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Bills</p>
+                  <p className="text-xl font-bold text-slate-800 dark:text-white">{salesList.length}</p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
+                <div className="rounded-xl bg-green-50 dark:bg-green-950/60 p-2.5 text-green-600 dark:text-green-400">
+                  <FiTrendingUp className="text-lg" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Revenue</p>
+                  <p className="text-xl font-bold text-slate-800 dark:text-white">{formatINR(totalRevenue)}</p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800 transition hover:shadow-md">
+                <div className="rounded-xl bg-orange-50 dark:bg-orange-950/60 p-2.5 text-orange-600 dark:text-orange-400">
+                  <FiPieChart className="text-lg" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Estimated Profit (15%)</p>
+                  <p className="text-xl font-bold text-slate-800 dark:text-white">{formatINR(estimatedProfit)}</p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Charts Row */}
@@ -188,50 +218,82 @@ export default function SalesPage() {
           <div className="col-span-1 lg:col-span-2 rounded-2xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800">
             <h3 className="text-sm font-bold text-slate-800 dark:text-white mb-4">Revenue Trend</h3>
             <div className="h-60 w-full min-w-0">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#215CF6" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#215CF6" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(148, 163, 184, 0.15)" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 12 }} dy={10} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 12 }} tickFormatter={(val) => `₹${val/1000}k`} dx={-10} />
-                  <Tooltip 
-                    contentStyle={{ borderRadius: '12px', border: '1px solid rgba(226, 232, 240, 0.15)', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.3)', backgroundColor: '#0f172a', color: '#f8fafc' }}
-                    itemStyle={{ color: '#f8fafc' }}
-                    formatter={(value) => [formatINR(Number(value) || 0), "Revenue"]}
-                  />
-                  <Area type="monotone" dataKey="revenue" stroke="#215CF6" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
-                </AreaChart>
-              </ResponsiveContainer>
+              {loading ? (
+                <div className="h-full w-full rounded-xl youtube-shimmer relative overflow-hidden flex items-end p-4">
+                  <div className="w-full flex justify-between items-end gap-3">
+                    {[30, 55, 45, 80, 60, 90, 75].map((h, i) => (
+                      <div key={i} className="flex-1 rounded-t-md bg-white/40 dark:bg-slate-700/40" style={{ height: `${h}%` }} />
+                    ))}
+                  </div>
+                </div>
+              ) : revenueData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#215CF6" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#215CF6" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(148, 163, 184, 0.15)" />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 12 }} dy={10} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 12 }} tickFormatter={(val) => `₹${val/1000}k`} dx={-10} />
+                    <Tooltip 
+                      contentStyle={{ borderRadius: '12px', border: '1px solid rgba(226, 232, 240, 0.15)', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.3)', backgroundColor: '#0f172a', color: '#f8fafc' }}
+                      itemStyle={{ color: '#f8fafc' }}
+                      formatter={(value) => [formatINR(Number(value) || 0), "Revenue"]}
+                    />
+                    <Area type="monotone" dataKey="revenue" stroke="#215CF6" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+                  <FiDollarSign className="text-slate-300 dark:text-slate-600 mb-2" size={28} />
+                  <p className="text-xs font-semibold text-slate-500">No Revenue Trend Data Available</p>
+                </div>
+              )}
             </div>
           </div>
           
-          <div className="col-span-1 rounded-2xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800">
-            <h3 className="text-sm font-bold text-slate-800 dark:text-white mb-4">Payment Methods</h3>
-            <div className="h-44 w-full min-w-0">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={paymentData} layout="vertical" margin={{ top: 0, right: 30, left: 10, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(148, 163, 184, 0.15)" />
-                  <XAxis type="number" hide />
-                  <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
-                  <Tooltip 
-                    cursor={{ fill: 'rgba(148, 163, 184, 0.1)' }} 
-                    contentStyle={{ borderRadius: '12px', border: '1px solid rgba(226, 232, 240, 0.15)', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.3)', backgroundColor: '#0f172a', color: '#f8fafc' }} 
-                    itemStyle={{ color: '#f8fafc' }}
-                    formatter={(val) => formatINR(Number(val) || 0)} 
-                  />
-                  <Bar dataKey="amount" radius={[0, 4, 4, 0]} barSize={24} />
-                </BarChart>
-              </ResponsiveContainer>
+          <div className="col-span-1 rounded-2xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col justify-between">
+            <div>
+              <h3 className="text-sm font-bold text-slate-800 dark:text-white mb-4">Payment Methods</h3>
+              <div className="h-44 w-full min-w-0">
+                {loading ? (
+                  <div className="h-full w-full rounded-xl youtube-shimmer flex flex-col justify-around p-3">
+                    <div className="h-4 w-3/4 rounded-md bg-white/40 dark:bg-slate-700/40" />
+                    <div className="h-4 w-1/2 rounded-md bg-white/40 dark:bg-slate-700/40" />
+                    <div className="h-4 w-2/3 rounded-md bg-white/40 dark:bg-slate-700/40" />
+                  </div>
+                ) : paymentData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={paymentData} layout="vertical" margin={{ top: 0, right: 30, left: 10, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(148, 163, 184, 0.15)" />
+                      <XAxis type="number" hide />
+                      <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontWeight: 600 }} />
+                      <Tooltip 
+                        cursor={{ fill: 'rgba(148, 163, 184, 0.1)' }} 
+                        contentStyle={{ borderRadius: '12px', border: '1px solid rgba(226, 232, 240, 0.15)', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.3)', backgroundColor: '#0f172a', color: '#f8fafc' }} 
+                        itemStyle={{ color: '#f8fafc' }}
+                        formatter={(val) => formatINR(Number(val) || 0)} 
+                      />
+                      <Bar dataKey="amount" radius={[0, 4, 4, 0]} barSize={24} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex h-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+                    <FiCreditCard className="text-slate-300 dark:text-slate-600 mb-2" size={24} />
+                    <p className="text-xs font-semibold text-slate-500">No Payment Data</p>
+                  </div>
+                )}
+              </div>
             </div>
             <div className="mt-4 flex justify-around border-t border-slate-100 dark:border-slate-800 pt-3">
                <div className="text-center w-full">
                  <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">Total Sales Value</p>
-                 <p className="text-lg font-bold text-[#215CF6] mt-0.5">{formatINR(salesList.reduce((sum, s) => sum + s.total, 0) || 0)}</p>
+                 <div className="text-lg font-bold text-[#215CF6] mt-0.5">
+                   {loading ? <div className="h-6 w-24 rounded-md youtube-shimmer mx-auto" /> : formatINR(totalRevenue)}
+                 </div>
                </div>
             </div>
           </div>
@@ -245,20 +307,36 @@ export default function SalesPage() {
             <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
               <h3 className="font-bold text-slate-800 dark:text-white text-sm">Top Selling Products</h3>
             </div>
-            <div className="p-3 space-y-3">
-              {topProducts.map((p, i) => (
-                <div key={p.id} className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 last:border-0 last:pb-0">
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-50 dark:bg-blue-950/60 text-[10px] font-bold text-blue-600 dark:text-blue-400">
-                      #{i + 1}
-                    </div>
-                    <div>
-                      <p className="text-[12px] font-semibold text-slate-800 dark:text-white line-clamp-1">{p.name}</p>
-                      <p className="text-[10px] font-medium text-slate-500 dark:text-slate-400">{p.sold} units sold</p>
+            <div className="p-3 space-y-3 flex-1">
+              {loading ? (
+                Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 last:border-0">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="h-6 w-6 rounded-md youtube-shimmer shrink-0" />
+                      <div className="space-y-1">
+                        <div className="h-3.5 w-24 rounded-md youtube-shimmer" />
+                        <div className="h-2.5 w-16 rounded-md youtube-shimmer" />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : topProducts.length > 0 ? (
+                topProducts.map((p, i) => (
+                  <div key={p.id || i} className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 last:border-0 last:pb-0">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-50 dark:bg-blue-950/60 text-[10px] font-bold text-blue-600 dark:text-blue-400">
+                        #{i + 1}
+                      </div>
+                      <div>
+                        <p className="text-[12px] font-semibold text-slate-800 dark:text-white line-clamp-1">{p.name}</p>
+                        <p className="text-[10px] font-medium text-slate-500 dark:text-slate-400">{p.sold} units sold</p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="py-8 text-center text-xs text-slate-400">No top products recorded</div>
+              )}
             </div>
           </div>
 
@@ -282,55 +360,69 @@ export default function SalesPage() {
               <table className="w-full min-w-[700px] text-left border-collapse">
                 <thead>
                   <tr className="bg-slate-50 dark:bg-slate-800/70 border-b border-slate-100 dark:border-slate-800 text-[10px] uppercase tracking-widest text-slate-400">
-                    <th className="px-4 py-2 font-bold">Bill ID</th>
-                    <th className="px-4 py-2 font-bold">Date</th>
-                    <th className="px-4 py-2 font-bold">Items</th>
-                    <th className="px-4 py-2 font-bold">Total</th>
-                    <th className="px-4 py-2 font-bold">Payment</th>
-                    <th className="px-4 py-2 font-bold">Status</th>
-                    <th className="px-4 py-2 font-bold text-center">Action</th>
+                    <th className="px-4 py-2.5 font-bold">Bill ID</th>
+                    <th className="px-4 py-2.5 font-bold">Date</th>
+                    <th className="px-4 py-2.5 font-bold">Items</th>
+                    <th className="px-4 py-2.5 font-bold">Total</th>
+                    <th className="px-4 py-2.5 font-bold">Payment</th>
+                    <th className="px-4 py-2.5 font-bold">Status</th>
+                    <th className="px-4 py-2.5 font-bold text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-[12px]">
-                  {paginatedSales.length > 0 ? paginatedSales.map((sale) => (
-                    <tr key={sale.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60">
-                      <td className="px-4 py-2.5 font-semibold text-blue-600 dark:text-blue-400">{sale.id}</td>
-                      <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300 font-medium">{sale.date}</td>
-                      <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300">{sale.items}</td>
-                      <td className="px-4 py-2.5 font-bold text-slate-800 dark:text-white tabular-nums">{formatINR(sale.total)}</td>
-                      <td className="px-4 py-2.5">
-                        <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-medium">
-                          {sale.payment === "Cash" && <FiBriefcase className="text-blue-500" size={12} />}
-                          {sale.payment === "Card" && <FiCreditCard className="text-green-500" size={12} />}
-                          {sale.payment === "UPI" && <FiSmartphone className="text-orange-500" size={12} />}
-                          {sale.payment}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2.5">
-                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase ${
-                          sale.status === 'Paid' || sale.status === 'Completed'
-                            ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400'
-                            : 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400'
-                        }`}>
-                          {sale.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2.5">
-                        <div className="flex items-center justify-center gap-1.5">
-                           <button 
-                             onClick={() => setSelectedSale(sale)}
-                             className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 transition hover:bg-blue-100 dark:hover:bg-blue-950/60 hover:text-blue-600 dark:hover:text-blue-400" 
-                             title="View"
-                           >
-                             <FiEye size={12} />
-                           </button>
-                        </div>
-                      </td>
-                    </tr>
-                  )) : (
+                  {loading ? (
+                    Array.from({ length: 6 }).map((_, i) => (
+                      <tr key={i} className="border-b border-slate-100 dark:border-slate-800/60">
+                        <td className="px-4 py-3"><div className="h-3.5 w-16 rounded-md youtube-shimmer" /></td>
+                        <td className="px-4 py-3"><div className="h-3 w-20 rounded-md youtube-shimmer" /></td>
+                        <td className="px-4 py-3"><div className="h-3 w-12 rounded-md youtube-shimmer" /></td>
+                        <td className="px-4 py-3"><div className="h-3.5 w-20 rounded-md youtube-shimmer" /></td>
+                        <td className="px-4 py-3"><div className="h-3 w-14 rounded-md youtube-shimmer" /></td>
+                        <td className="px-4 py-3"><div className="h-4 w-14 rounded-full youtube-shimmer" /></td>
+                        <td className="px-4 py-3 text-center"><div className="h-6 w-6 rounded-lg youtube-shimmer mx-auto" /></td>
+                      </tr>
+                    ))
+                  ) : paginatedSales.length > 0 ? (
+                    paginatedSales.map((sale) => (
+                      <tr key={sale.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                        <td className="px-4 py-2.5 font-semibold text-blue-600 dark:text-blue-400">{sale.id}</td>
+                        <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300 font-medium">{sale.date}</td>
+                        <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300">{sale.items}</td>
+                        <td className="px-4 py-2.5 font-bold text-slate-800 dark:text-white tabular-nums">{formatINR(sale.total)}</td>
+                        <td className="px-4 py-2.5">
+                          <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-medium">
+                            {sale.payment === "Cash" && <FiBriefcase className="text-blue-500" size={12} />}
+                            {sale.payment === "Card" && <FiCreditCard className="text-green-500" size={12} />}
+                            {sale.payment === "UPI" && <FiSmartphone className="text-orange-500" size={12} />}
+                            {sale.payment}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2.5">
+                          <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase ${
+                            sale.status === 'Paid' || sale.status === 'Completed'
+                              ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400'
+                              : 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400'
+                          }`}>
+                            {sale.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2.5">
+                          <div className="flex items-center justify-center gap-1.5">
+                             <button 
+                               onClick={() => setSelectedSale(sale)}
+                               className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 transition hover:bg-blue-100 dark:hover:bg-blue-950/60 hover:text-blue-600 dark:hover:text-blue-400" 
+                               title="View"
+                             >
+                               <FiEye size={12} />
+                             </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
                     <tr>
                       <td colSpan={7} className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">
-                        No transactions found for "{query}".
+                        No transactions recorded.
                       </td>
                     </tr>
                   )}
@@ -339,7 +431,7 @@ export default function SalesPage() {
             </div>
 
             {/* Pagination */}
-            {totalPages > 1 && (
+            {!loading && totalPages > 1 && (
               <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 px-4 py-3 bg-white dark:bg-slate-900">
                 <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
                   Page <span className="font-bold text-slate-800 dark:text-white">{currentPage}</span> of {totalPages}

@@ -121,13 +121,22 @@ export default function TopProducts() {
           Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
-              className="animate-pulse rounded-xl border border-slate-100 dark:border-slate-800 p-4 bg-slate-50/50 space-y-3"
+              className="rounded-xl border border-slate-100 dark:border-slate-800 p-4 bg-slate-50/50 dark:bg-slate-900/40 space-y-3"
             >
-              <div className="flex justify-between items-center">
-                <div className="h-4 w-1/3 bg-slate-200 rounded" />
-                <div className="h-4 w-1/4 bg-slate-200 rounded" />
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="h-7 w-7 rounded-lg youtube-shimmer shrink-0" />
+                  <div className="space-y-1.5">
+                    <div className="h-4 w-32 rounded-md youtube-shimmer" />
+                    <div className="h-3 w-24 rounded-md youtube-shimmer" />
+                  </div>
+                </div>
+                <div className="space-y-1.5 text-right">
+                  <div className="h-4 w-20 rounded-md youtube-shimmer ml-auto" />
+                  <div className="h-2.5 w-16 rounded-md youtube-shimmer ml-auto" />
+                </div>
               </div>
-              <div className="h-2 w-full bg-slate-200 rounded" />
+              <div className="h-2 w-full rounded-full youtube-shimmer mt-2" />
             </div>
           ))
         ) : top3.length === 0 ? (

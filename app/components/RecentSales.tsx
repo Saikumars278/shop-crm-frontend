@@ -96,13 +96,19 @@ export default function RecentSales() {
           Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="animate-pulse flex items-center justify-between p-3.5 rounded-xl border border-slate-100 bg-slate-50/50"
+              className="flex items-center justify-between p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40"
             >
-              <div className="space-y-1.5 w-1/2">
-                <div className="h-3 w-3/4 bg-slate-200 rounded" />
-                <div className="h-2 w-1/2 bg-slate-200 rounded" />
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="h-8 w-8 rounded-lg youtube-shimmer shrink-0" />
+                <div className="space-y-1.5 min-w-0">
+                  <div className="h-3.5 w-32 rounded-md youtube-shimmer" />
+                  <div className="h-2.5 w-24 rounded-md youtube-shimmer" />
+                </div>
               </div>
-              <div className="h-4 w-1/4 bg-slate-200 rounded" />
+              <div className="space-y-1.5 text-right shrink-0">
+                <div className="h-4 w-16 rounded-md youtube-shimmer ml-auto" />
+                <div className="h-2.5 w-12 rounded-md youtube-shimmer ml-auto" />
+              </div>
             </div>
           ))
         ) : displaySales.length === 0 ? (

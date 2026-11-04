@@ -138,8 +138,25 @@ export default function ProductStats() {
         {[1, 2, 3, 4].map((item) => (
           <div
             key={item}
-            className="h-36 sm:h-44 rounded-2xl youtube-shimmer border border-slate-200 dark:border-slate-800"
-          />
+            className="h-36 sm:h-44 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-xs flex flex-col justify-between"
+          >
+            <div className="flex items-start justify-between gap-1.5">
+              <div className="space-y-1.5">
+                <div className="h-3 w-20 rounded-md youtube-shimmer" />
+                <div className="h-7 sm:h-8 w-24 rounded-md youtube-shimmer mt-1" />
+                <div className="h-2.5 w-16 rounded-md youtube-shimmer" />
+              </div>
+              <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl youtube-shimmer shrink-0" />
+            </div>
+
+            <div className="mt-3 border-t border-slate-100 dark:border-slate-800 pt-2.5 space-y-1.5">
+              <div className="flex items-center justify-between">
+                <div className="h-2.5 w-12 rounded-md youtube-shimmer" />
+                <div className="h-2.5 w-8 rounded-md youtube-shimmer" />
+              </div>
+              <div className="h-1.5 w-full rounded-full youtube-shimmer" />
+            </div>
+          </div>
         ))}
       </section>
     );

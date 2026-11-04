@@ -64,6 +64,62 @@ export default function TodayPerformance() {
   const currentRev = data?.today_revenue ?? 0;
   const targetPct = Math.min(Math.round((currentRev / dailyTarget) * 100), 100);
 
+  if (loading) {
+    return (
+      <div className="flex flex-col h-full w-full min-w-0 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm p-4 sm:p-5 space-y-4">
+        {/* Header Shimmer */}
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 rounded-xl youtube-shimmer shrink-0" />
+            <div className="space-y-1.5 min-w-0">
+              <div className="h-4 w-32 rounded-md youtube-shimmer" />
+              <div className="h-3 w-40 rounded-md youtube-shimmer" />
+            </div>
+          </div>
+          <div className="h-6 w-16 rounded-full youtube-shimmer" />
+        </div>
+
+        {/* Target Widget Shimmer */}
+        <div className="rounded-xl border border-slate-100 dark:border-slate-800 p-3.5 space-y-2.5">
+          <div className="flex justify-between items-center">
+            <div className="h-3 w-32 rounded-md youtube-shimmer" />
+            <div className="h-3 w-20 rounded-md youtube-shimmer" />
+          </div>
+          <div className="h-2.5 w-full rounded-full youtube-shimmer" />
+          <div className="flex justify-between items-center">
+            <div className="h-2.5 w-24 rounded-md youtube-shimmer" />
+            <div className="h-2.5 w-20 rounded-md youtube-shimmer" />
+          </div>
+        </div>
+
+        {/* 3 Metric Cards Shimmer */}
+        <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-1 gap-2.5 sm:gap-3 flex-1">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between rounded-xl border border-slate-100 dark:border-slate-800 p-3"
+            >
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-lg youtube-shimmer shrink-0" />
+                <div className="space-y-1.5">
+                  <div className="h-2.5 w-20 rounded-md youtube-shimmer" />
+                  <div className="h-4 w-28 rounded-md youtube-shimmer" />
+                </div>
+              </div>
+              <div className="space-y-1.5 text-right">
+                <div className="h-2.5 w-16 rounded-md youtube-shimmer ml-auto" />
+                <div className="h-2.5 w-20 rounded-md youtube-shimmer ml-auto" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Footer Shimmer */}
+        <div className="h-7 w-full rounded-lg youtube-shimmer mt-auto" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-full w-full min-w-0 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition-all duration-200">
       {/* ─── Header ─────────────────────────────────────── */}
@@ -118,10 +174,10 @@ export default function TodayPerformance() {
         </div>
 
         {/* 2. Vertical Metric Cards (Clean & Responsive) */}
-        {loading || !data ? (
+        {!data ? (
           <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-1 gap-2.5 sm:gap-3 min-w-0">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="animate-pulse h-16 rounded-xl bg-slate-100 dark:bg-slate-800" />
+              <div key={i} className="h-16 rounded-xl youtube-shimmer" />
             ))}
           </div>
         ) : (

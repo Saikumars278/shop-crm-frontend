@@ -95,6 +95,70 @@ export default function SettingsPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen p-4 sm:p-6 bg-slate-50 dark:bg-slate-950 transition-colors">
+        <div className="mx-auto max-w-7xl space-y-6 w-full min-w-0">
+          {/* Header Bar Shimmer */}
+          <div className="flex flex-col sm:flex-row items-center justify-between rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900 p-5 shadow-xs gap-4">
+            <div className="flex items-center gap-4 w-full sm:w-auto">
+              <div className="h-12 w-12 rounded-2xl youtube-shimmer shrink-0" />
+              <div className="space-y-2">
+                <div className="h-5 w-48 rounded-md youtube-shimmer" />
+                <div className="h-3 w-72 max-w-full rounded-md youtube-shimmer" />
+              </div>
+            </div>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <div className="h-9 w-28 rounded-xl youtube-shimmer" />
+              <div className="h-9 w-24 rounded-xl youtube-shimmer" />
+              <div className="h-9 w-32 rounded-xl youtube-shimmer" />
+            </div>
+          </div>
+
+          {/* Main Layout Shimmer */}
+          <div className="flex flex-col lg:flex-row gap-6 w-full min-w-0">
+            {/* Sidebar Shimmer */}
+            <div className="w-full lg:w-72 shrink-0 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900 p-3 shadow-xs space-y-2">
+              <div className="h-3 w-20 rounded youtube-shimmer my-2 mx-2" />
+              <div className="h-11 w-full rounded-xl youtube-shimmer" />
+              <div className="h-11 w-full rounded-xl youtube-shimmer" />
+            </div>
+
+            {/* Content Panel Shimmer */}
+            <div className="flex-1 space-y-6 min-w-0">
+              <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900 shadow-xs overflow-hidden">
+                <div className="border-b border-slate-100 dark:border-slate-800/80 p-5 flex justify-between items-center">
+                  <div className="space-y-1.5">
+                    <div className="h-4 w-36 rounded youtube-shimmer" />
+                    <div className="h-3 w-56 rounded youtube-shimmer" />
+                  </div>
+                  <div className="h-8 w-24 rounded-lg youtube-shimmer" />
+                </div>
+                <div className="p-6 space-y-5">
+                  <div className="flex items-center gap-5">
+                    <div className="h-20 w-20 rounded-2xl youtube-shimmer shrink-0" />
+                    <div className="space-y-2">
+                      <div className="h-8 w-28 rounded-xl youtube-shimmer" />
+                      <div className="h-3 w-40 rounded youtube-shimmer" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                      <div key={i} className="space-y-2">
+                        <div className="h-3 w-24 rounded youtube-shimmer" />
+                        <div className="h-10 w-full rounded-xl youtube-shimmer" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen p-4 sm:p-6 bg-slate-50 dark:bg-slate-950 transition-colors">
       

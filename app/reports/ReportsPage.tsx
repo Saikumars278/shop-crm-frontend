@@ -45,6 +45,7 @@ export default function ReportsPage() {
   const [dateFilter, setDateFilter] = useState("This Month");
   const [reportType, setReportType] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   // API state
   const [summary, setSummary] = useState({ total_sales: 0, total_revenue: 0, total_profit: 0, total_bills: 0 });
@@ -55,6 +56,7 @@ export default function ReportsPage() {
   const [reportsList, setReportsList] = useState<any[]>([]);
 
   useEffect(() => {
+    setLoading(true);
     fetch(`${API_BASE}/reports/page-data/`)
       .then((res) => res.json())
       .then((data) => {
@@ -67,11 +69,13 @@ export default function ReportsPage() {
       })
       .catch((err) => {
         console.error("Failed to load reports data:", err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
   // Filter Table
-  // --- helpers ---------------------------------------------------------
   function getDateRange(): { from: string; to: string } | null {
     const today = new Date();
     const fmt = (d: Date) => d.toISOString().split("T")[0];
@@ -104,8 +108,6 @@ export default function ReportsPage() {
     XLSX.writeFile(workbook, name.endsWith(".xlsx") ? name : `${name}.xlsx`);
   }
 
-
-  // --- filter -----------------------------------------------------------
   const filteredReports = useMemo(() => {
     let filtered = reportsList;
     const range = getDateRange();
@@ -186,45 +188,62 @@ export default function ReportsPage() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-2 gap-2.5 sm:gap-4 xl:grid-cols-4">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-5 shadow-sm border border-slate-200/80 dark:border-slate-800/80 transition hover:shadow-md">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
-              <FiTrendingUp size={22} />
-            </div>
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Total Sales</p>
-              <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">{activeSummary.total_sales.toLocaleString("en-IN")}</p>
-            </div>
-          </div>
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-5 shadow-sm border border-slate-200/80 dark:border-slate-800/80"
+              >
+                <div className="h-12 w-12 rounded-2xl youtube-shimmer shrink-0" />
+                <div className="space-y-1.5 flex-1 min-w-0">
+                  <div className="h-3 w-20 rounded-md youtube-shimmer" />
+                  <div className="h-6 w-28 rounded-md youtube-shimmer" />
+                </div>
+              </div>
+            ))
+          ) : (
+            <>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-5 shadow-sm border border-slate-200/80 dark:border-slate-800/80 transition hover:shadow-md">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
+                  <FiTrendingUp size={22} />
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Total Sales</p>
+                  <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">{activeSummary.total_sales.toLocaleString("en-IN")}</p>
+                </div>
+              </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-5 shadow-sm border border-slate-200/80 dark:border-slate-800/80 transition hover:shadow-md">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
-              <FiDollarSign size={22} />
-            </div>
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Total Revenue</p>
-              <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">{formatINR(activeSummary.total_revenue)}</p>
-            </div>
-          </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-5 shadow-sm border border-slate-200/80 dark:border-slate-800/80 transition hover:shadow-md">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
+                  <FiDollarSign size={22} />
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Total Revenue</p>
+                  <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">{formatINR(activeSummary.total_revenue)}</p>
+                </div>
+              </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-5 shadow-sm border border-slate-200/80 dark:border-slate-800/80 transition hover:shadow-md">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
-              <FiPieChart size={22} />
-            </div>
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Total Profit</p>
-              <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">{formatINR(activeSummary.total_profit)}</p>
-            </div>
-          </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-5 shadow-sm border border-slate-200/80 dark:border-slate-800/80 transition hover:shadow-md">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
+                  <FiPieChart size={22} />
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Total Profit</p>
+                  <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">{formatINR(activeSummary.total_profit)}</p>
+                </div>
+              </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-5 shadow-sm border border-slate-200/80 dark:border-slate-800/80 transition hover:shadow-md">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400">
-              <FiFileText size={22} />
-            </div>
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Total Bills</p>
-              <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">{activeSummary.total_bills.toLocaleString("en-IN")}</p>
-            </div>
-          </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-2xl bg-white dark:bg-slate-900 p-3 sm:p-5 shadow-sm border border-slate-200/80 dark:border-slate-800/80 transition hover:shadow-md">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400">
+                  <FiFileText size={22} />
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Total Bills</p>
+                  <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">{activeSummary.total_bills.toLocaleString("en-IN")}</p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Main Analytics Chart Row */}
@@ -236,35 +255,50 @@ export default function ReportsPage() {
             </div>
           </div>
           <div className="h-72 w-full min-w-0 pt-2">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={revenueData} margin={{ top: 10, right: 15, left: -5, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748B', fontSize: 12, fontWeight: 600 }} dy={10} />
-                <YAxis 
-                  axisLine={false} 
-                  tickLine={false} 
-                  width={65}
-                  tick={{ fill: '#64748B', fontSize: 11, fontWeight: 500 }} 
-                  tickFormatter={(val) => {
-                    const n = Number(val) || 0;
-                    if (n >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
-                    if (n >= 1000) return `₹${Math.round(n / 1000)}k`;
-                    return `₹${n}`;
-                  }} 
-                />
-                <Tooltip 
-                  contentStyle={{ borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)', padding: '12px 16px' }}
-                  formatter={(value) => formatINR(Number(value) || 0)}
-                />
-                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontSize: '12px', fontWeight: 600 }} />
-                <Bar dataKey="revenue" name="Revenue" fill="#2563EB" radius={[6, 6, 0, 0]} barSize={36} />
-                <Line type="monotone" dataKey="profit" name="Profit" stroke="#10B981" strokeWidth={3.5} dot={{ r: 4, strokeWidth: 2, fill: '#fff' }} activeDot={{ r: 6 }} />
-              </ComposedChart>
-            </ResponsiveContainer>
+            {loading ? (
+              <div className="h-full w-full rounded-xl youtube-shimmer relative overflow-hidden flex items-end p-5">
+                <div className="w-full flex justify-between items-end gap-3">
+                  {[40, 70, 50, 85, 60, 95, 80].map((h, i) => (
+                    <div key={i} className="flex-1 rounded-t-md bg-white/40 dark:bg-slate-700/40" style={{ height: `${h}%` }} />
+                  ))}
+                </div>
+              </div>
+            ) : revenueData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={revenueData} margin={{ top: 10, right: 15, left: -5, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748B', fontSize: 12, fontWeight: 600 }} dy={10} />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    width={65}
+                    tick={{ fill: '#64748B', fontSize: 11, fontWeight: 500 }} 
+                    tickFormatter={(val) => {
+                      const n = Number(val) || 0;
+                      if (n >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
+                      if (n >= 1000) return `₹${Math.round(n / 1000)}k`;
+                      return `₹${n}`;
+                    }} 
+                  />
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)', padding: '12px 16px' }}
+                    formatter={(value) => formatINR(Number(value) || 0)}
+                  />
+                  <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontSize: '12px', fontWeight: 600 }} />
+                  <Bar dataKey="revenue" name="Revenue" fill="#2563EB" radius={[6, 6, 0, 0]} barSize={36} />
+                  <Line type="monotone" dataKey="profit" name="Profit" stroke="#10B981" strokeWidth={3.5} dot={{ r: 4, strokeWidth: 2, fill: '#fff' }} activeDot={{ r: 6 }} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex h-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+                <FiTrendingUp className="text-slate-300 dark:text-slate-600 mb-2" size={28} />
+                <p className="text-xs font-semibold text-slate-500">No Analytics Data Available</p>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Mini Reports Grid with Equal Heights & Clean Empty States */}
+        {/* Mini Reports Grid */}
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
           
           {/* Top Products */}
@@ -277,7 +311,17 @@ export default function ReportsPage() {
               <span className="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-950/60 dark:text-blue-400 px-2 py-0.5 rounded-md">Top Sales</span>
             </div>
             <div className="p-4 flex-1 flex flex-col justify-center space-y-3">
-              {topProducts.length > 0 ? (
+              {loading ? (
+                Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="flex items-center justify-between pb-2.5 border-b border-slate-50 dark:border-slate-800/50 last:border-b-0">
+                    <div className="flex items-center gap-3 w-3/4">
+                      <div className="h-6 w-6 rounded-lg youtube-shimmer shrink-0" />
+                      <div className="h-3.5 w-32 rounded-md youtube-shimmer" />
+                    </div>
+                    <div className="h-3.5 w-16 rounded-md youtube-shimmer shrink-0" />
+                  </div>
+                ))
+              ) : topProducts.length > 0 ? (
                 topProducts.map((p, i) => (
                   <div key={p.id || i} className="flex items-center justify-between border-b border-slate-50 dark:border-slate-800/50 pb-2.5 last:border-b-0 last:pb-0">
                     <div className="flex items-center gap-3 overflow-hidden">
@@ -307,7 +351,14 @@ export default function ReportsPage() {
               <span className="text-[10px] font-bold text-amber-600 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-400 px-2 py-0.5 rounded-md">Action Needed</span>
             </div>
             <div className="p-4 flex-1 flex flex-col justify-center space-y-3">
-              {lowStock.length > 0 ? (
+              {loading ? (
+                Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="flex items-center justify-between pb-2.5 border-b border-slate-50 dark:border-slate-800/50 last:border-b-0">
+                    <div className="h-3.5 w-36 rounded-md youtube-shimmer" />
+                    <div className="h-4 w-14 rounded-lg youtube-shimmer shrink-0" />
+                  </div>
+                ))
+              ) : lowStock.length > 0 ? (
                 lowStock.map((p, i) => (
                   <div key={p.id || i} className="flex items-center justify-between border-b border-slate-50 dark:border-slate-800/50 pb-2.5 last:border-b-0 last:pb-0">
                     <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate pr-2">{p.name}</p>
@@ -335,7 +386,14 @@ export default function ReportsPage() {
               <span className="text-[10px] font-bold text-red-600 bg-red-50 dark:bg-red-950/60 dark:text-red-400 px-2 py-0.5 rounded-md">Spoilage Risk</span>
             </div>
             <div className="p-4 flex-1 flex flex-col justify-center space-y-3">
-              {expiryAlerts.length > 0 ? (
+              {loading ? (
+                Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="flex items-center justify-between pb-2.5 border-b border-slate-50 dark:border-slate-800/50 last:border-b-0">
+                    <div className="h-3.5 w-36 rounded-md youtube-shimmer" />
+                    <div className="h-4 w-16 rounded-lg youtube-shimmer shrink-0" />
+                  </div>
+                ))
+              ) : expiryAlerts.length > 0 ? (
                 expiryAlerts.map((p, i) => (
                   <div key={p.id || i} className="flex items-center justify-between border-b border-slate-50 dark:border-slate-800/50 pb-2.5 last:border-b-0 last:pb-0">
                     <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate pr-2">{p.name}</p>
@@ -396,40 +454,53 @@ export default function ReportsPage() {
             <table className="w-full min-w-[700px] text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50 dark:bg-slate-800/70 border-b border-slate-100 dark:border-slate-800 text-[10px] uppercase tracking-widest text-slate-400">
-                  <th className="px-4 py-2 font-bold">Report ID</th>
-                  <th className="px-4 py-2 font-bold">Date</th>
-                  <th className="px-4 py-2 font-bold">Category</th>
-                  <th className="px-4 py-2 font-bold">Generated By</th>
-                  <th className="px-4 py-2 font-bold">Status</th>
-                  <th className="px-4 py-2 font-bold text-center">Action</th>
+                  <th className="px-4 py-2.5 font-bold">Report ID</th>
+                  <th className="px-4 py-2.5 font-bold">Date</th>
+                  <th className="px-4 py-2.5 font-bold">Category</th>
+                  <th className="px-4 py-2.5 font-bold">Generated By</th>
+                  <th className="px-4 py-2.5 font-bold">Status</th>
+                  <th className="px-4 py-2.5 font-bold text-center">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50 text-[12px]">
-                {paginatedReports.length > 0 ? paginatedReports.map((report) => (
-                  <tr key={report.id} className="transition-colors hover:bg-slate-50 dark:bg-slate-800/70">
-                    <td className="px-4 py-2.5 font-semibold text-blue-600">{report.id}</td>
-                    <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300 font-medium">{report.date}</td>
-                    <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300 font-semibold">{report.category}</td>
-                    <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300">{report.generatedBy}</td>
-                    <td className="px-4 py-2.5">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold ${
-                        report.status === 'Ready' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                      }`}>
-                        {report.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-2.5">
-                       <div className="flex items-center justify-center gap-1.5">
-                          <button 
-                            onClick={() => exportExcel([report], `${report.id}.xlsx`)}
-                            className="flex h-7 w-7 items-center justify-center rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 transition hover:bg-emerald-100 hover:text-emerald-600 dark:hover:bg-emerald-950 dark:hover:text-emerald-400" 
-                            title="Download Excel (.xlsx)">
-                            <FiDownload size={12} />
-                          </button>
-                       </div>
-                    </td>
-                  </tr>
-                )) : (
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-[12px]">
+                {loading ? (
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <tr key={i} className="border-b border-slate-100 dark:border-slate-800/60">
+                      <td className="px-4 py-3"><div className="h-3.5 w-20 rounded-md youtube-shimmer" /></td>
+                      <td className="px-4 py-3"><div className="h-3 w-20 rounded-md youtube-shimmer" /></td>
+                      <td className="px-4 py-3"><div className="h-3 w-16 rounded-md youtube-shimmer" /></td>
+                      <td className="px-4 py-3"><div className="h-3 w-24 rounded-md youtube-shimmer" /></td>
+                      <td className="px-4 py-3"><div className="h-4 w-14 rounded-full youtube-shimmer" /></td>
+                      <td className="px-4 py-3 text-center"><div className="h-6 w-6 rounded-lg youtube-shimmer mx-auto" /></td>
+                    </tr>
+                  ))
+                ) : paginatedReports.length > 0 ? (
+                  paginatedReports.map((report) => (
+                    <tr key={report.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/70">
+                      <td className="px-4 py-2.5 font-semibold text-blue-600 dark:text-blue-400">{report.id}</td>
+                      <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300 font-medium">{report.date}</td>
+                      <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300 font-semibold">{report.category}</td>
+                      <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300">{report.generatedBy}</td>
+                      <td className="px-4 py-2.5">
+                        <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold ${
+                          report.status === 'Ready' ? 'bg-green-100 dark:bg-green-950/60 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-400'
+                        }`}>
+                          {report.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2.5">
+                         <div className="flex items-center justify-center gap-1.5">
+                            <button 
+                              onClick={() => exportExcel([report], `${report.id}.xlsx`)}
+                              className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 transition hover:bg-emerald-100 hover:text-emerald-600 dark:hover:bg-emerald-950 dark:hover:text-emerald-400" 
+                              title="Download Excel (.xlsx)">
+                              <FiDownload size={12} />
+                            </button>
+                         </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">
                       No reports found for the selected criteria.
@@ -441,7 +512,7 @@ export default function ReportsPage() {
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && (
+          {!loading && totalPages > 1 && (
             <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 px-4 py-3 bg-white dark:bg-slate-900">
               <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
                 Page <span className="font-bold text-slate-800 dark:text-white">{currentPage}</span> of {totalPages}

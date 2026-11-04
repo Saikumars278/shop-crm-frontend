@@ -92,16 +92,21 @@ export default function StockOverview() {
   const available = data?.available ?? 0;
   const lowStock = data?.low_stock ?? 0;
   const outOfStock = data?.out_of_stock ?? 0;
-  const totalProducts = (data?.total_products || (available + lowStock + outOfStock)) || 1;
+  const rawTotal = (data?.total_products ?? (available + lowStock + outOfStock));
+  const totalProducts = rawTotal > 0 ? rawTotal : 0;
+  const hasProducts = totalProducts > 0;
 
   const lowStockItems = data?.low_stock_items ?? [];
   const outOfStockItems = data?.out_of_stock_items ?? [];
 
-  const availPct = Math.round((available / totalProducts) * 100);
-  const lowPct = Math.round((lowStock / totalProducts) * 100);
-  const outPct = Math.max(0, 100 - availPct - lowPct);
+  // Accurate percentages: Never force outPct = 100 when outOfStock = 0
+  const availPct = hasProducts ? Math.round((available / totalProducts) * 100) : 0;
+  const lowPct = hasProducts ? Math.round((lowStock / totalProducts) * 100) : 0;
+  const outPct = hasProducts && outOfStock > 0
+    ? Math.min(100, Math.max(0, 100 - availPct - lowPct))
+    : 0;
 
-  const isHealthy = availPct >= 70;
+  const isHealthy = hasProducts && outOfStock === 0 && lowStock === 0;
 
   return (
     <div className="flex flex-col h-full min-h-[460px] w-full box-border overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition-all duration-200">
@@ -121,13 +126,29 @@ export default function StockOverview() {
 
         <span
           className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold ${
-            isHealthy
+            !hasProducts
+              ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+              : isHealthy
               ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400"
               : "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400"
           }`}
         >
-          {isHealthy ? <FiTrendingUp size={12} /> : <FiAlertTriangle size={12} />}
-          {isHealthy ? "Healthy Stock" : "Attention Required"}
+          {!hasProducts ? (
+            <>
+              <FiPackage size={12} />
+              Catalog Empty
+            </>
+          ) : isHealthy ? (
+            <>
+              <FiTrendingUp size={12} />
+              Healthy Stock
+            </>
+          ) : (
+            <>
+              <FiAlertTriangle size={12} />
+              Attention Required
+            </>
+          )}
         </span>
       </div>
 
@@ -167,26 +188,40 @@ export default function StockOverview() {
           <div className="rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 p-3 sm:p-3.5">
             <div className="flex items-center justify-between text-xs font-semibold mb-2">
               <span className="text-slate-700 dark:text-slate-200">Inventory Health Ratio</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold">{availPct}% Healthy</span>
+              <span
+                className={
+                  !hasProducts
+                    ? "text-slate-500 dark:text-slate-400 font-bold"
+                    : isHealthy
+                    ? "text-emerald-600 dark:text-emerald-400 font-bold"
+                    : "text-amber-600 dark:text-amber-400 font-bold"
+                }
+              >
+                {hasProducts ? `${availPct}% Healthy` : "Catalog Empty (0%)"}
+              </span>
             </div>
 
-            {/* Segmented Progress Bar */}
+            {/* Segmented Progress Bar: Shows neutral empty track when totalProducts is 0, never false full red */}
             <div className="flex h-2.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
-              <div
-                className="h-full bg-emerald-500 transition-all duration-500"
-                style={{ width: `${availPct}%` }}
-                title={`Available: ${availPct}%`}
-              />
-              <div
-                className="h-full bg-amber-500 transition-all duration-500"
-                style={{ width: `${lowPct}%` }}
-                title={`Low Stock: ${lowPct}%`}
-              />
-              <div
-                className="h-full bg-rose-500 transition-all duration-500"
-                style={{ width: `${outPct}%` }}
-                title={`Out of Stock: ${outPct}%`}
-              />
+              {hasProducts && (
+                <>
+                  <div
+                    className="h-full bg-emerald-500 transition-all duration-500"
+                    style={{ width: `${availPct}%` }}
+                    title={`Available: ${availPct}%`}
+                  />
+                  <div
+                    className="h-full bg-amber-500 transition-all duration-500"
+                    style={{ width: `${lowPct}%` }}
+                    title={`Low Stock: ${lowPct}%`}
+                  />
+                  <div
+                    className="h-full bg-rose-500 transition-all duration-500"
+                    style={{ width: `${outPct}%` }}
+                    title={`Out of Stock: ${outPct}%`}
+                  />
+                </>
+              )}
             </div>
 
             <div className="flex items-center justify-between text-[10px] font-medium text-slate-400 mt-1.5">
@@ -217,7 +252,9 @@ export default function StockOverview() {
                   {lowStockItems.length === 0 ? (
                     <div className="py-4 text-center">
                       <FiCheckCircle className="mx-auto text-emerald-500 mb-1" size={16} />
-                      <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">All products above minimum stock.</p>
+                      <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                        {!hasProducts ? "No products in store catalog." : "All products above minimum stock."}
+                      </p>
                     </div>
                   ) : (
                     lowStockItems.slice(0, 3).map((item) => (
@@ -243,7 +280,7 @@ export default function StockOverview() {
                 href="/products"
                 className="mt-3 inline-flex items-center justify-center gap-1.5 w-full rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-bold py-1.5 transition-colors shadow-2xs"
               >
-                <FiRefreshCw size={12} /> Restock Now
+                <FiRefreshCw size={12} /> {!hasProducts ? "Add Products" : "Restock Now"}
               </Link>
             </div>
 
@@ -260,7 +297,9 @@ export default function StockOverview() {
                   {outOfStockItems.length === 0 ? (
                     <div className="py-4 text-center">
                       <FiCheckCircle className="mx-auto text-emerald-500 mb-1" size={16} />
-                      <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Zero stockouts across store catalog.</p>
+                      <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                        {!hasProducts ? "No catalog products registered." : "Zero stockouts across store catalog."}
+                      </p>
                     </div>
                   ) : (
                     outOfStockItems.slice(0, 3).map((item) => (
@@ -298,7 +337,11 @@ export default function StockOverview() {
           <div>
             <span className="font-bold text-indigo-900 dark:text-indigo-300">AI Inventory Insight:</span>{" "}
             <span className="text-slate-600 dark:text-slate-300 font-medium">
-              {outOfStock > 0 ? (
+              {!hasProducts ? (
+                <>
+                  No products registered in store catalog. Add products to start tracking inventory health, stock utilization, and restock alerts.
+                </>
+              ) : outOfStock > 0 ? (
                 <>
                   <span className="font-semibold text-rose-600 dark:text-rose-400">{outOfStock} products</span> are
                   currently out of stock

@@ -129,13 +129,16 @@ export default function AiRecommendations() {
         {loading ? (
           <>
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="animate-pulse rounded-xl border border-slate-100 dark:border-slate-800 p-3.5 bg-slate-50/50 space-y-2.5">
+              <div key={i} className="rounded-xl border border-slate-100 dark:border-slate-800 p-3.5 bg-slate-50/50 dark:bg-slate-900/40 space-y-2.5">
                 <div className="flex justify-between items-center">
-                  <div className="h-4 w-1/3 bg-slate-200 dark:bg-slate-700 rounded" />
-                  <div className="h-3 w-1/6 bg-slate-200 dark:bg-slate-700 rounded" />
+                  <div className="flex items-center gap-2 w-2/3">
+                    <div className="h-4 w-16 rounded-md youtube-shimmer" />
+                    <div className="h-4 w-32 rounded-md youtube-shimmer" />
+                  </div>
+                  <div className="h-4 w-14 rounded-full youtube-shimmer" />
                 </div>
-                <div className="h-3 w-3/4 bg-slate-200 dark:bg-slate-700 rounded" />
-                <div className="h-8 w-full bg-slate-200 dark:bg-slate-700 rounded-lg" />
+                <div className="h-3 w-4/5 rounded-md youtube-shimmer" />
+                <div className="h-8 w-full rounded-lg youtube-shimmer" />
               </div>
             ))}
           </>

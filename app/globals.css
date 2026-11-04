@@ -156,7 +156,130 @@ html, body {
   animation: pulseGlow 5s ease-in-out infinite;
 }
 
-/* YouTube-style Shimmer Skeleton Animation */
+/* ==========================================================================
+   Global YouTube-Style Animation System & Micro-Interactions
+   ========================================================================== */
+
+/* YouTube Signature Progress Bar Trickle Pulse */
+@keyframes ytTrickleGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px #ff0000, 0 0 5px #ff4e45;
+  }
+  50% {
+    box-shadow: 0 0 16px #ff0000, 0 0 8px #ff4e45;
+  }
+}
+
+/* Smooth Fade-In and Slide-Up Page & Content Entrance */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up,
+.fade-in-up,
+.page-enter,
+.crm-main-content,
+.main-content,
+.crm-main-fluid {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out both;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Stagger Delays for Cards, Tables, and Charts */
+.stagger-1 { animation-delay: 50ms; }
+.stagger-2 { animation-delay: 100ms; }
+.stagger-3 { animation-delay: 150ms; }
+.stagger-4 { animation-delay: 200ms; }
+.stagger-5 { animation-delay: 250ms; }
+.stagger-6 { animation-delay: 300ms; }
+
+/* Subtle Hover Lift & Elevation for Dashboard Cards & Containers */
+.hover-lift,
+.crm-card,
+.card-hover,
+.card-interactive {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease !important;
+}
+
+.hover-lift:hover,
+.crm-card:hover,
+.card-hover:hover,
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+}
+
+.dark .hover-lift:hover,
+.dark .crm-card:hover,
+.dark .card-hover:hover,
+.dark .card-interactive:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 8px 10px -6px rgba(0, 0, 0, 0.25);
+}
+
+/* Tactile Interactive Button & Element Feedback */
+button:not(:disabled):active,
+.btn:not(:disabled):active,
+a[role="button"]:active {
+  transform: scale(0.97);
+}
+
+button:not(:disabled),
+.btn:not(:disabled) {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, opacity 0.15s ease;
+}
+
+/* Rotating Loading Animations for Refresh Buttons */
+@keyframes ytSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.is-refreshing svg,
+.is-refreshing .lucide,
+.is-refreshing i,
+.refresh-spinning {
+  animation: ytSpin 0.75s linear infinite !important;
+}
+
+/* YouTube-style Shimmer Skeleton Animation for Cards, Tables & Charts */
 @keyframes youtubeShimmer {
   0% {
     background-position: -200% 0;
@@ -166,7 +289,8 @@ html, body {
   }
 }
 
-.youtube-shimmer {
+.youtube-shimmer,
+.skeleton-shimmer {
   background: linear-gradient(
     90deg,
     #f1f5f9 0%,
@@ -174,12 +298,13 @@ html, body {
     #cbd5e1 50%,
     #e2e8f0 75%,
     #f1f5f9 100%
-  );
-  background-size: 200% 100%;
-  animation: youtubeShimmer 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  ) !important;
+  background-size: 200% 100% !important;
+  animation: youtubeShimmer 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite !important;
 }
 
-.dark .youtube-shimmer {
+.dark .youtube-shimmer,
+.dark .skeleton-shimmer {
   background: linear-gradient(
     90deg,
     #1e293b 0%,
@@ -187,7 +312,43 @@ html, body {
     #475569 50%,
     #334155 75%,
     #1e293b 100%
-  );
-  background-size: 200% 100%;
-  animation: youtubeShimmer 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  ) !important;
+  background-size: 200% 100% !important;
+  animation: youtubeShimmer 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite !important;
+}
+
+.skeleton-box {
+  border-radius: 0.5rem;
+  min-height: 1.25rem;
+}
+
+/* Accessibility: Respect Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .youtube-shimmer,
+  .skeleton-shimmer,
+  .animate-float,
+  .animate-pulse-glow,
+  .is-refreshing svg,
+  .animate-fade-in-up,
+  .page-enter,
+  .fade-in-up {
+    animation: none !important;
+  }
+
+  .hover-lift:hover,
+  .crm-card:hover,
+  .card-hover:hover,
+  .card-interactive:hover,
+  button:not(:disabled):active {
+    transform: none !important;
+  }
 }
